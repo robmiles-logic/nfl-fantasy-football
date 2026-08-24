@@ -1,10 +1,307 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dynasty Trade Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dynasty Trade Calculator</title>
+
+<style>
+
+:root{
+    --bg:#f3f4f6;
+    --card:#ffffff;
+    --text:#111827;
+    --secondary:#6b7280;
+    --border:#d1d5db;
+    --accent:#2563eb;
+    --pick:#e5e7eb;
+    --pick-selected:#10b981;
+}
+
+.dark{
+    --bg:#111827;
+    --card:#1f2937;
+    --text:#f9fafb;
+    --secondary:#9ca3af;
+    --border:#374151;
+    --accent:#3b82f6;
+    --pick:#374151;
+    --pick-selected:#059669;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Segoe UI,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    transition:.3s;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.card{
+    background:var(--card);
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.toggle-btn{
+    border:none;
+    background:var(--accent);
+    color:white;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+}
+
+.teams{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.team-card{
+    text-align:center;
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    margin:auto;
+    display:block;
+    object-fit:cover;
+    border:3px solid var(--accent);
+}
+
+.team-name{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.username{
+    color:var(--secondary);
+}
+
+.pick-section{
+    margin-top:20px;
+}
+
+.pick-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.pick-btn{
+    border:none;
+    background:var(--pick);
+    color:var(--text);
+    padding:10px 15px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.pick-btn.selected{
+    background:var(--pick-selected);
+    color:white;
+}
+
+.result{
+    text-align:center;
+}
+
+.result h2{
+    margin-bottom:10px;
+}
+
+.trade-score{
+    font-size:32px;
+    font-weight:bold;
+}
+
+.value-line{
+    margin-top:12px;
+    line-height:1.8;
+}
+
+@media(max-width:768px){
+
+    .teams{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+}
+
+</style>
 </head>
+
 <body>
-    <h1>🏈 Dynasty Trade Calculator</h1>
-    <p>Website is working!</p>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🏈 Dynasty Trade Calculator</h1>
+
+        <button class="toggle-btn" onclick="toggleTheme()">
+            🌙 Dark / ☀️ Light
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>League</h2>
+
+        <input
+            type="text"
+            placeholder="Enter Sleeper League ID">
+    </div>
+
+    <div class="teams">
+
+        <div class="card team-card">
+
+            <img
+                class="avatar"
+                src="https://via.placeholder.com/100"
+                alt="Team 1">
+
+            <div class="team-name">
+                Team 1 Name
+     </div>
+
+            <div class="pick-section">
+
+                <h3>Draft Picks</h3>
+
+                <div class="pick-grid">
+
+                    <button class="pick-btn">2027 1st</button>
+                    <button class="pick-btn">2027 2nd</button>
+                    <button class="pick-btn">2028 1st</button>
+                    <button class="pick-btn">2028 2nd</button>
+                    <button class="pick-btn">2029 1st</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card team-card">
+
+            <img
+                class="avatar"
+         <div class="team-name">
+                Team 2 Name
+            </div>
+
+            <div class="username">
+                @Username
+            </div>
+
+            <div class="pick-section">
+
+                <h3>Draft Picks</h3>
+
+                <div class="pick-grid">
+
+                    <button class="pick-btn">2027 1st</button>
+                    <button class="pick-btn">2027 2nd</button>
+                    <button class="pick-btn">2028 1st</button>
+                    <button class="pick-btn">2028 2nd</button>
+                    <button class="pick-btn">2029 1st</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card result">
+
+        <h2>Trade Analysis</h2>
+
+        <div class="trade-score">
+            🤝 Fair Trade
+        </div>
+
+        <div class="value-line">
+            Team 1 Value: 102.5<br>
+            Team 2 Value: 98.2<br>
+            Difference: +4.3
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.querySelectorAll('.pick-btn').forEach(button => {
+
+    button.addEventListener('click', function(){
+
+        this.classList.toggle('selected');
+
+    });
+
+});
+
+function toggleTheme(){
+
+    document.body.classList.toggle('dark');
+
+    if(document.body.classList.contains('dark')){
+        localStorage.setItem('theme','dark');
+    }
+    else{
+        localStorage.setItem('theme','light');
+    }
+}
+
+if(localStorage.getItem('theme') === 'dark'){
+    document.body.classList.add('dark');
+}
+
+</script>
+
 </body>
 </html>
