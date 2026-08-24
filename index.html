@@ -525,19 +525,45 @@
             updateThemeButton();
         }
 
-        function prepareForLeagueLoad() {
-            const leagueId = leagueIdInput.value.trim();
+async function prepareForLeagueLoad() {
 
-            if (!leagueId) {
-                leagueStatus.textContent =
-                    "Please enter a Sleeper League ID.";
-                leagueIdInput.focus();
-                return;
-            }
+    const leagueId = leagueIdInput.value.trim();
 
-            leagueStatus.textContent =
-                "League ID entered. Sleeper API connection will be added in Step 3.";
+    if (!leagueId) {
+        leagueStatus.textContent =
+            "Please enter a Sleeper League ID.";
+        return;
+    }
+
+    try {
+
+        leagueStatus.textContent =
+            "Loading league...";
+
+        const response = await fetch(
+            `https://api.sleeper.app/v1/league/${leagueId}`
+        );
+
+        if (!response.ok) {
+            throw new Error("League not found");
         }
+
+        const league = await response.json();
+
+        leagueStatus.textContent =
+            `✅ Loaded: ${league.name}`;
+
+        console.log(league);
+
+    }
+    catch (error) {
+
+        leagueStatus.textContent =
+            "❌ Unable to load league";
+
+        console.error(error);
+    }
+}
 
         themeButton.addEventListener("click", toggleTheme);
 
