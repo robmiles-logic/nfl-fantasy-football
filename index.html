@@ -2,12 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NFL Draft Pick Trade Calculator</title>
 
     <style>
@@ -41,9 +36,7 @@
             --shadow: rgba(0, 0, 0, 0.35);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -53,24 +46,10 @@
             font-family: "Segoe UI", Arial, sans-serif;
         }
 
-        button,
-        input,
-        select {
-            font: inherit;
-        }
+        button, input, select { font: inherit; }
+        button:disabled, input:disabled, select:disabled { cursor: not-allowed; opacity: 0.65; }
 
-        button:disabled,
-        input:disabled,
-        select:disabled {
-            cursor: not-allowed;
-            opacity: 0.65;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; }
 
         .header {
             display: flex;
@@ -80,10 +59,7 @@
             margin-bottom: 24px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: clamp(1.6rem, 4vw, 2.2rem);
-        }
+        .header h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.2rem); }
 
         .button {
             border: 0;
@@ -95,9 +71,7 @@
             font-weight: 700;
         }
 
-        .button:hover {
-            background: var(--primary-hover);
-        }
+        .button:hover { background: var(--primary-hover); }
 
         .card {
             background: var(--card);
@@ -107,13 +81,8 @@
             box-shadow: 0 3px 12px var(--shadow);
         }
 
-        .league-card {
-            margin-bottom: 20px;
-        }
-
-        .league-card h2 {
-            margin-top: 0;
-        }
+        .league-card { margin-bottom: 20px; }
+        .league-card h2, .team-card h2, .analysis h2 { margin-top: 0; }
 
         .league-row {
             display: grid;
@@ -121,8 +90,7 @@
             gap: 12px;
         }
 
-        .league-input,
-        .team-select {
+        .league-input, .team-select {
             width: 100%;
             min-height: 46px;
             border: 1px solid var(--border);
@@ -132,32 +100,16 @@
             color: var(--text);
         }
 
-        .league-input:focus,
-        .team-select:focus {
+        .league-input:focus, .team-select:focus {
             outline: 3px solid rgba(37, 99, 235, 0.2);
             border-color: var(--primary);
         }
 
-        .status {
-            min-height: 24px;
-            margin: 12px 0 0;
-            color: var(--secondary);
-        }
+        .status { min-height: 24px; margin: 12px 0 0; color: var(--secondary); }
+        .status.success { color: var(--success); }
+        .status.error { color: var(--error); }
 
-        .status.success {
-            color: var(--success);
-        }
-
-        .status.error {
-            color: var(--error);
-        }
-
-        .league-details {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
+        .league-details { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
         .chip {
             border: 1px solid var(--border);
@@ -175,19 +127,8 @@
             margin-bottom: 20px;
         }
 
-        .team-card {
-            display: flex;
-            flex-direction: column;
-            min-height: 480px;
-        }
-
-        .team-card h2 {
-            margin-top: 0;
-        }
-
-        .team-select {
-            margin-bottom: 22px;
-        }
+        .team-card { display: flex; flex-direction: column; min-height: 480px; }
+        .team-select { margin-bottom: 22px; }
 
         .team-profile {
             display: flex;
@@ -210,44 +151,14 @@
             overflow: hidden;
         }
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .team-name { font-size: 1.35rem; font-weight: 750; }
+        .username, .team-info { margin-top: 5px; color: var(--secondary); }
+        .team-info { font-size: 0.9rem; }
 
-        .team-name {
-            font-size: 1.35rem;
-            font-weight: 750;
-        }
-
-        .username,
-        .team-info {
-            margin-top: 5px;
-            color: var(--secondary);
-        }
-
-        .team-info {
-            font-size: 0.9rem;
-        }
-
-        .picks-section {
-            flex: 1;
-            padding-top: 18px;
-            border-top: 1px solid var(--border);
-        }
-
-        .picks-section h3 {
-            margin: 0 0 12px;
-            text-align: center;
-        }
-
-        .pick-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
+        .picks-section { flex: 1; padding-top: 18px; border-top: 1px solid var(--border); }
+        .picks-section h3 { margin: 0 0 12px; text-align: center; }
+        .pick-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 
         .pick-placeholder {
             display: grid;
@@ -260,25 +171,9 @@
             text-align: center;
         }
 
-        .pick-group {
-            width: 100%;
-            margin-bottom: 14px;
-        }
-
-        .pick-group-title {
-            margin: 4px 0 9px;
-            color: var(--secondary);
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .pick-group-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 9px;
-        }
+        .pick-group { width: 100%; margin-bottom: 14px; }
+        .pick-group-title { margin: 4px 0 9px; color: var(--secondary); text-align: center; font-size: 0.9rem; font-weight: 700; }
+        .pick-group-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
 
         .pick-button {
             border: 1px solid var(--border);
@@ -290,41 +185,14 @@
             font-weight: 700;
         }
 
-        .pick-button:hover {
-            border-color: var(--primary);
-        }
+        .pick-button:hover { border-color: var(--primary); }
+        .pick-button.selected { border-color: var(--selected); background: var(--selected); color: white; }
+        .pick-value { display: block; margin-top: 2px; font-size: 0.72rem; font-weight: 600; opacity: 0.85; }
+        .pick-origin { display: block; margin-top: 2px; font-size: 0.68rem; font-weight: 500; opacity: 0.85; }
 
-        .pick-button.selected {
-            border-color: var(--selected);
-            background: var(--selected);
-            color: white;
-        }
-
-        .pick-origin {
-            display: block;
-            margin-top: 2px;
-            font-size: 0.68rem;
-            font-weight: 500;
-            opacity: 0.85;
-        }
-
-        .analysis {
-            text-align: center;
-        }
-
-        .analysis h2 {
-            margin-top: 0;
-        }
-
-        .trade-score {
-            margin: 12px 0;
-            font-size: clamp(1.6rem, 5vw, 2.2rem);
-            font-weight: 800;
-        }
-
-        .analysis-message {
-            color: var(--secondary);
-        }
+        .analysis { text-align: center; }
+        .trade-score { margin: 12px 0; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 800; }
+        .analysis-message { color: var(--secondary); }
 
         .summary-grid {
             display: grid;
@@ -334,54 +202,21 @@
             margin: 20px auto 0;
         }
 
-        .summary-box {
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px;
-        }
-
-        .summary-label {
-            margin-bottom: 5px;
-            color: var(--secondary);
-            font-size: 0.9rem;
-        }
-
-        .summary-value {
-            font-weight: 750;
-        }
+        .summary-box { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+        .summary-label { margin-bottom: 5px; color: var(--secondary); font-size: 0.9rem; }
+        .summary-value { font-weight: 750; }
 
         @media (max-width: 760px) {
-            body {
-                padding: 14px;
-            }
-
-            .header {
-                align-items: flex-start;
-            }
-
-            .league-row,
-            .teams,
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .load-button {
-                width: 100%;
-            }
+            body { padding: 14px; }
+            .header { align-items: flex-start; }
+            .league-row, .teams, .summary-grid { grid-template-columns: 1fr; }
+            .load-button { width: 100%; }
         }
 
         @media (max-width: 460px) {
-            .header {
-                flex-direction: column;
-            }
-
-            .theme-button {
-                width: 100%;
-            }
-
-            .card {
-                padding: 17px;
-            }
+            .header { flex-direction: column; }
+            .theme-button { width: 100%; }
+            .card { padding: 17px; }
         }
     </style>
 </head>
@@ -390,1753 +225,705 @@
     <main class="container">
         <header class="header">
             <h1>🏈 NFL Draft Pick Trade Calculator</h1>
-
-            <button
-                id="themeButton"
-                class="button theme-button"
-                type="button"
-            >
-                🌙 Dark mode
-            </button>
+            <button id="themeButton" class="button theme-button" type="button">🌙 Dark mode</button>
         </header>
 
         <section class="card league-card">
             <h2>Load Sleeper League</h2>
-
             <div class="league-row">
-                <input
-                    id="leagueId"
-                    class="league-input"
-                    type="text"
-                    inputmode="numeric"
-                    placeholder="Enter Sleeper League ID"
-                >
-
-                <button
-                    id="loadButton"
-                    class="button load-button"
-                    type="button"
-                >
-                    Load League
-                </button>
+                <input id="leagueId" class="league-input" type="text" inputmode="numeric" placeholder="Enter Sleeper League ID">
+                <button id="loadButton" class="button load-button" type="button">Load League</button>
             </div>
-
-            <p id="leagueStatus" class="status">
-                Enter a league ID to get started.
-            </p>
-
-            <div
-                id="leagueDetails"
-                class="league-details"
-                hidden
-            ></div>
+            <p id="leagueStatus" class="status">Enter a league ID to get started.</p>
+            <div id="leagueDetails" class="league-details" hidden></div>
         </section>
 
         <section class="teams">
             <article class="card team-card">
                 <h2>Team 1</h2>
-
-                <select
-                    id="team1Select"
-                    class="team-select"
-                    disabled
-                >
+                <select id="team1Select" class="team-select" disabled>
                     <option value="">Load a league first</option>
                 </select>
-
                 <div class="team-profile">
                     <div id="team1Avatar" class="avatar">🏈</div>
                     <div id="team1Name" class="team-name">Team 1 Name</div>
                     <div id="team1Username" class="username">@username</div>
                     <div id="team1Info" class="team-info"></div>
                 </div>
-
                 <div class="picks-section">
                     <h3>Available Draft Picks</h3>
-
-                    <div id="team1Picks" class="pick-placeholder">
-                        Select a team to display its draft picks.
-                    </div>
+                    <div id="team1Picks" class="pick-placeholder">Select a team to display its draft picks.</div>
                 </div>
             </article>
 
             <article class="card team-card">
                 <h2>Team 2</h2>
-
-                <select
-                    id="team2Select"
-                    class="team-select"
-                    disabled
-                >
+                <select id="team2Select" class="team-select" disabled>
                     <option value="">Load a league first</option>
                 </select>
-
                 <div class="team-profile">
                     <div id="team2Avatar" class="avatar">🏈</div>
                     <div id="team2Name" class="team-name">Team 2 Name</div>
                     <div id="team2Username" class="username">@username</div>
                     <div id="team2Info" class="team-info"></div>
                 </div>
-
                 <div class="picks-section">
                     <h3>Available Draft Picks</h3>
-
-                    <div id="team2Picks" class="pick-placeholder">
-                        Select a team to display its draft picks.
-                    </div>
+                    <div id="team2Picks" class="pick-placeholder">Select a team to display its draft picks.</div>
                 </div>
             </article>
         </section>
 
         <section class="card analysis">
             <h2>Trade Analysis</h2>
-
-            <div id="tradeScore" class="trade-score">
-                Select picks to analyse a trade
-            </div>
-
-            <p id="analysisMessage" class="analysis-message">
-                Pick values will be added after ownership has been verified.
-            </p>
-
+            <div id="tradeScore" class="trade-score">Select picks to analyse a trade</div>
+            <p id="analysisMessage" class="analysis-message">Select at least one exact draft pick from each team.</p>
             <div class="summary-grid">
                 <div class="summary-box">
-                    <div class="summary-label">Team 1</div>
-                    <div id="team1Summary" class="summary-value">
-                        0 selected
-                    </div>
+                    <div class="summary-label">Team 1 gives</div>
+                    <div id="team1Summary" class="summary-value">0 selected</div>
                 </div>
-
                 <div class="summary-box">
-                    <div class="summary-label">Team 2</div>
-                    <div id="team2Summary" class="summary-value">
-                        0 selected
-                    </div>
+                    <div class="summary-label">Team 1 receives</div>
+                    <div id="team2Summary" class="summary-value">0 selected</div>
                 </div>
-
                 <div class="summary-box">
                     <div class="summary-label">Status</div>
-                    <div id="tradeStatus" class="summary-value">
-                        No picks selected
-                    </div>
+                    <div id="tradeStatus" class="summary-value">No picks selected</div>
                 </div>
             </div>
         </section>
     </main>
 
     <script>
-        /*
-         * Addresses are assembled in JavaScript to prevent chat or
-         * rich-text editors from converting them into HTML links.
-         */
+        const API_BASE = ["https:", "", "api.sleeper.app", "v1"].join("/");
+        const AVATAR_BASE = ["https:", "", "sleepercdn.com", "avatars", "thumbs"].join("/");
 
-        const API_BASE = [
-            "https:",
-            "",
-            "api.sleeper.app",
-            "v1"
-        ].join("/");
-
-        const AVATAR_BASE = [
-            "https:",
-            "",
-            "sleepercdn.com",
-            "avatars",
-            "thumbs"
-        ].join("/");
-
-
-        /*
-         * Page elements
-         */
-
-        const themeButton =
-            document.getElementById("themeButton");
-
-        const loadButton =
-            document.getElementById("loadButton");
-
-        const leagueIdInput =
-            document.getElementById("leagueId");
-
-        const leagueStatus =
-            document.getElementById("leagueStatus");
-
-        const leagueDetails =
-            document.getElementById("leagueDetails");
-
-        const team1Select =
-            document.getElementById("team1Select");
-
-        const team2Select =
-            document.getElementById("team2Select");
-
-
-        /*
-         * Loaded data
-         */
+        const themeButton = document.getElementById("themeButton");
+        const loadButton = document.getElementById("loadButton");
+        const leagueIdInput = document.getElementById("leagueId");
+        const leagueStatus = document.getElementById("leagueStatus");
+        const leagueDetails = document.getElementById("leagueDetails");
+        const team1Select = document.getElementById("team1Select");
+        const team2Select = document.getElementById("team2Select");
 
         let currentLeague = null;
         let currentDraft = null;
-
         let leagueUsers = [];
         let leagueRosters = [];
         let leagueDrafts = [];
-
         let futureTradedPicks = [];
         let currentDraftTradedPicks = [];
-
         let currentDraftOwnership = [];
         let futureDraftOwnership = [];
 
-
-        /*
-         * Theme
-         */
+        /* 12-team, 15-round value model from the supplied spreadsheet. */
+        const PICK_VALUES = [
+            90.3,78.3,71.3,66.4,62.5,59.4,56.7,54.4,52.3,50.5,48.9,47.4,
+            46.0,44.7,43.5,42.4,41.4,40.4,39.4,38.5,37.7,36.9,36.1,35.4,
+            34.7,34.0,33.4,32.7,32.1,31.5,31.0,30.4,29.9,29.4,28.9,28.4,
+            27.9,27.4,27.0,26.6,26.1,25.7,25.3,24.9,24.5,24.1,23.8,23.4,
+            23.1,22.7,22.4,22.0,21.7,21.4,21.1,20.7,20.4,20.1,19.8,19.6,
+            19.3,19.0,18.7,18.4,18.2,17.9,17.6,17.4,17.1,16.9,16.6,16.4,
+            16.2,15.9,15.7,15.5,15.2,15.0,14.8,14.6,14.4,14.2,13.9,13.7,
+            13.5,13.3,13.1,12.9,12.7,12.5,12.4,12.2,12.0,11.8,11.6,11.4,
+            11.2,11.1,10.9,10.7,10.6,10.4,10.2,10.0,9.9,9.7,9.6,9.4,
+            9.2,9.1,8.9,8.8,8.6,8.5,8.3,8.2,8.0,7.9,7.7,7.6,
+            7.4,7.3,7.1,7.0,6.9,6.7,6.6,6.5,6.3,6.2,6.1,5.9,
+            5.8,5.7,5.5,5.4,5.3,5.2,5.0,4.9,4.8,4.7,4.5,4.4,
+            4.3,4.2,4.1,3.9,3.8,3.7,3.6,3.5,3.4,3.3,3.1,3.0,
+            2.9,2.8,2.7,2.6,2.5,2.4,2.3,2.2,2.1,2.0,1.9,1.8,
+            1.7,1.6,1.4,1.3,1.2,1.1,1.0,1.0,0.9,0.8,0.7,0.6
+        ];
 
         function updateThemeButton() {
-            const isDark =
-                document.body.classList.contains("dark");
-
-            themeButton.textContent =
-                isDark
-                    ? "☀️ Light mode"
-                    : "🌙 Dark mode";
+            themeButton.textContent = document.body.classList.contains("dark") ? "☀️ Light mode" : "🌙 Dark mode";
         }
-
 
         function toggleTheme() {
             document.body.classList.toggle("dark");
-
-            localStorage.setItem(
-                "theme",
-                document.body.classList.contains("dark")
-                    ? "dark"
-                    : "light"
-            );
-
+            localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
             updateThemeButton();
         }
 
-
-        /*
-         * Sleeper requests
-         */
-
         async function fetchJson(path) {
-            const response =
-                await fetch(API_BASE + path);
-
-            if (!response.ok) {
-                throw new Error(
-                    "Sleeper returned status " +
-                    response.status +
-                    " for " +
-                    path
-                );
-            }
-
+            const response = await fetch(API_BASE + path);
+            if (!response.ok) throw new Error("Sleeper returned status " + response.status + " for " + path);
             return response.json();
         }
 
-
         async function loadLeague() {
-            const leagueId =
-                leagueIdInput.value.trim();
-
+            const leagueId = leagueIdInput.value.trim();
             if (!leagueId) {
-                setStatus(
-                    "Please enter a Sleeper League ID.",
-                    "error"
-                );
-
+                setStatus("Please enter a Sleeper League ID.", "error");
                 return;
             }
 
             try {
                 setLoading(true);
                 resetLeague();
+                setStatus("Loading league...", "");
 
-                setStatus(
-                    "Loading league...",
-                    ""
-                );
+                currentLeague = await fetchJson("/league/" + leagueId);
 
-                currentLeague =
-                    await fetchJson(
-                        "/league/" + leagueId
-                    );
-
-                const [
-                    users,
-                    rosters,
-                    drafts,
-                    leagueTraded
-                ] = await Promise.all([
-                    fetchJson(
-                        "/league/" +
-                        leagueId +
-                        "/users"
-                    ),
-
-                    fetchJson(
-                        "/league/" +
-                        leagueId +
-                        "/rosters"
-                    ),
-
-                    fetchJson(
-                        "/league/" +
-                        leagueId +
-                        "/drafts"
-                    ),
-
-                    fetchJson(
-                        "/league/" +
-                        leagueId +
-                        "/traded_picks"
-                    )
+                const [users, rosters, drafts, leagueTraded] = await Promise.all([
+                    fetchJson("/league/" + leagueId + "/users"),
+                    fetchJson("/league/" + leagueId + "/rosters"),
+                    fetchJson("/league/" + leagueId + "/drafts"),
+                    fetchJson("/league/" + leagueId + "/traded_picks")
                 ]);
 
-                leagueUsers =
-                    Array.isArray(users)
-                        ? users
-                        : [];
-
-                leagueRosters =
-                    Array.isArray(rosters)
-                        ? rosters
-                        : [];
-
-                leagueDrafts =
-                    Array.isArray(drafts)
-                        ? drafts
-                        : [];
-
-                futureTradedPicks =
-                    Array.isArray(leagueTraded)
-                        ? leagueTraded
-                        : [];
-
-                currentDraft =
-                    chooseCurrentDraft();
+                leagueUsers = Array.isArray(users) ? users : [];
+                leagueRosters = Array.isArray(rosters) ? rosters : [];
+                leagueDrafts = Array.isArray(drafts) ? drafts : [];
+                futureTradedPicks = Array.isArray(leagueTraded) ? leagueTraded : [];
+                currentDraft = chooseCurrentDraft();
 
                 if (currentDraft) {
-                    currentDraftTradedPicks =
-                        await fetchJson(
-                            "/draft/" +
-                            currentDraft.draft_id +
-                            "/traded_picks"
-                        );
+                    currentDraftTradedPicks = await fetchJson("/draft/" + currentDraft.draft_id + "/traded_picks");
                 }
 
-                if (
-                    !Array.isArray(
-                        currentDraftTradedPicks
-                    )
-                ) {
-                    currentDraftTradedPicks = [];
-                }
+                if (!Array.isArray(currentDraftTradedPicks)) currentDraftTradedPicks = [];
 
-                currentDraftOwnership =
-                    buildCurrentDraftOwnership();
-
-                futureDraftOwnership =
-                    buildFutureDraftOwnership();
+                currentDraftOwnership = buildCurrentDraftOwnership();
+                futureDraftOwnership = buildFutureDraftOwnership();
 
                 populateTeamDropdowns();
                 displayLeagueDetails();
+                setStatus("✅ Loaded: " + currentLeague.name, "success");
 
-                setStatus(
-                    "✅ Loaded: " +
-                    currentLeague.name,
-                    "success"
-                );
-
-                console.log(
-                    "League:",
-                    currentLeague
-                );
-
-                console.log(
-                    "League type:",
-                    getLeagueTypeName()
-                );
-
-                console.log(
-                    "Draft:",
-                    currentDraft
-                );
-
-                console.log(
-                    "Current draft trades:",
-                    currentDraftTradedPicks
-                );
-
-                console.log(
-                    "Future trades:",
-                    futureTradedPicks
-                );
-
-                console.log(
-                    "Current ownership:",
-                    currentDraftOwnership
-                );
-
-                console.log(
-                    "Future ownership:",
-                    futureDraftOwnership
-                );
-            }
-            catch (error) {
-                setStatus(
-                    "❌ Unable to load league. " +
-                    error.message,
-                    "error"
-                );
-
+                console.log("League:", currentLeague);
+                console.log("Draft:", currentDraft);
+                console.log("Current draft trades:", currentDraftTradedPicks);
+                console.log("Future trades:", futureTradedPicks);
+                console.log("Current ownership:", currentDraftOwnership);
+                console.log("Future ownership:", futureDraftOwnership);
+            } catch (error) {
+                setStatus("❌ Unable to load league. " + error.message, "error");
                 console.error(error);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         }
 
-
         function setLoading(isLoading) {
-            loadButton.disabled =
-                isLoading;
-
-            leagueIdInput.disabled =
-                isLoading;
-
-            loadButton.textContent =
-                isLoading
-                    ? "Loading..."
-                    : "Load League";
+            loadButton.disabled = isLoading;
+            leagueIdInput.disabled = isLoading;
+            loadButton.textContent = isLoading ? "Loading..." : "Load League";
         }
-
 
         function setStatus(message, type) {
-            leagueStatus.textContent =
-                message;
-
-            leagueStatus.className =
-                "status";
-
-            if (type) {
-                leagueStatus.classList.add(type);
-            }
+            leagueStatus.textContent = message;
+            leagueStatus.className = "status";
+            if (type) leagueStatus.classList.add(type);
         }
 
-
-        /*
-         * League and draft detection
-         */
-
-        function getLeagueTypeCode() {
-            return Number(
-                currentLeague?.settings?.type
-            );
-        }
-
-
-        function isDynastyLeague() {
-            return getLeagueTypeCode() === 2;
-        }
-
-
-        function isKeeperLeague() {
-            return getLeagueTypeCode() === 1;
-        }
-
-
-        function getLeagueTypeName() {
-            if (isDynastyLeague()) {
-                return "Dynasty";
-            }
-
-            if (isKeeperLeague()) {
-                return "Keeper";
-            }
-
-            return "Redraft";
-        }
-
+        function getLeagueTypeCode() { return Number(currentLeague?.settings?.type); }
+        function isDynastyLeague() { return getLeagueTypeCode() === 2; }
+        function isKeeperLeague() { return getLeagueTypeCode() === 1; }
+        function getLeagueTypeName() { return isDynastyLeague() ? "Dynasty" : isKeeperLeague() ? "Keeper" : "Redraft"; }
 
         function chooseCurrentDraft() {
-            if (leagueDrafts.length === 0) {
-                return null;
-            }
-
-            const activeDraft =
-                leagueDrafts.find(
-                    draft =>
-                        draft.status === "pre_draft" ||
-                        draft.status === "drafting"
-                );
-
-            if (activeDraft) {
-                return activeDraft;
-            }
-
-            return [...leagueDrafts].sort(
-                (draftA, draftB) =>
-                    Number(draftB.season || 0) -
-                        Number(draftA.season || 0) ||
-                    Number(draftB.created || 0) -
-                        Number(draftA.created || 0)
+            if (leagueDrafts.length === 0) return null;
+            const activeDraft = leagueDrafts.find(draft => draft.status === "pre_draft" || draft.status === "drafting");
+            return activeDraft || [...leagueDrafts].sort((a, b) =>
+                Number(b.season || 0) - Number(a.season || 0) || Number(b.created || 0) - Number(a.created || 0)
             )[0];
         }
 
-
         function isCurrentDraftActive() {
-            return Boolean(
-                currentDraft &&
-                (
-                    currentDraft.status === "pre_draft" ||
-                    currentDraft.status === "drafting"
-                )
-            );
+            return Boolean(currentDraft && (currentDraft.status === "pre_draft" || currentDraft.status === "drafting"));
         }
-
 
         function getNumberOfDraftRounds() {
-            const possibleValues = [
-                currentDraft?.settings?.rounds,
-                currentDraft?.settings?.draft_rounds,
-                currentLeague?.settings?.draft_rounds
-            ];
-
-            for (const value of possibleValues) {
-                const rounds =
-                    Number(value);
-
-                if (
-                    Number.isInteger(rounds) &&
-                    rounds > 0
-                ) {
-                    return rounds;
-                }
+            const values = [currentDraft?.settings?.rounds, currentDraft?.settings?.draft_rounds, currentLeague?.settings?.draft_rounds];
+            for (const value of values) {
+                const rounds = Number(value);
+                if (Number.isInteger(rounds) && rounds > 0) return rounds;
             }
-
-            const highestFutureRound =
-                Math.max(
-                    0,
-                    ...futureTradedPicks.map(
-                        pick =>
-                            Number(pick.round) || 0
-                    )
-                );
-
-            return highestFutureRound;
+            return Math.max(0, ...futureTradedPicks.map(pick => Number(pick.round) || 0));
         }
 
-
-        /*
-         * User, roster and slot mapping
-         */
-
-        function getUser(userId) {
-            return leagueUsers.find(
-                user =>
-                    String(user.user_id) ===
-                    String(userId)
-            );
-        }
-
-
-        function getRosterByUserId(userId) {
-            return leagueRosters.find(
-                roster =>
-                    String(roster.owner_id) ===
-                    String(userId)
-            );
-        }
-
-
-        function getRosterById(rosterId) {
-            return leagueRosters.find(
-                roster =>
-                    Number(roster.roster_id) ===
-                    Number(rosterId)
-            );
-        }
-
-
-        function getTeamName(user) {
-            return (
-                user?.metadata?.team_name ||
-                user?.display_name ||
-                "Unnamed Team"
-            );
-        }
-
+        function getUser(userId) { return leagueUsers.find(user => String(user.user_id) === String(userId)); }
+        function getRosterByUserId(userId) { return leagueRosters.find(roster => String(roster.owner_id) === String(userId)); }
+        function getRosterById(rosterId) { return leagueRosters.find(roster => Number(roster.roster_id) === Number(rosterId)); }
+        function getTeamName(user) { return user?.metadata?.team_name || user?.display_name || "Unnamed Team"; }
 
         function getDraftSlot(userId) {
-            const value =
-                Number(
-                    currentDraft?.draft_order?.[
-                        String(userId)
-                    ]
-                );
-
-            return Number.isInteger(value)
-                ? value
-                : null;
+            const value = Number(currentDraft?.draft_order?.[String(userId)]);
+            return Number.isInteger(value) ? value : null;
         }
-
 
         function getRosterIdForUser(userId) {
-            const roster =
-                getRosterByUserId(userId);
-
-            if (roster) {
-                return Number(
-                    roster.roster_id
-                );
-            }
-
-            const slot =
-                getDraftSlot(userId);
-
-            if (!Number.isInteger(slot)) {
-                return null;
-            }
-
-            const rosterId =
-                Number(
-                    currentDraft
-                        ?.slot_to_roster_id
-                        ?.[String(slot)]
-                );
-
-            return Number.isInteger(rosterId)
-                ? rosterId
-                : slot;
+            const roster = getRosterByUserId(userId);
+            if (roster) return Number(roster.roster_id);
+            const slot = getDraftSlot(userId);
+            if (!Number.isInteger(slot)) return null;
+            const rosterId = Number(currentDraft?.slot_to_roster_id?.[String(slot)]);
+            return Number.isInteger(rosterId) ? rosterId : slot;
         }
-
 
         function getUserIdForRoster(rosterId) {
-            const roster =
-                getRosterById(rosterId);
+            const roster = getRosterById(rosterId);
+            if (roster?.owner_id) return String(roster.owner_id);
 
-            if (roster?.owner_id) {
-                return String(
-                    roster.owner_id
-                );
-            }
+            const slotToRoster = currentDraft?.slot_to_roster_id || {};
+            const matchingSlot = Object.keys(slotToRoster).find(slot => Number(slotToRoster[slot]) === Number(rosterId));
+            if (!matchingSlot) return null;
 
-            const slotToRoster =
-                currentDraft?.slot_to_roster_id || {};
-
-            const matchingSlot =
-                Object.keys(slotToRoster).find(
-                    slot =>
-                        Number(slotToRoster[slot]) ===
-                        Number(rosterId)
-                );
-
-            if (!matchingSlot) {
-                return null;
-            }
-
-            const draftOrder =
-                currentDraft?.draft_order || {};
-
-            return (
-                Object.keys(draftOrder).find(
-                    userId =>
-                        Number(draftOrder[userId]) ===
-                        Number(matchingSlot)
-                ) || null
-            );
+            const draftOrder = currentDraft?.draft_order || {};
+            return Object.keys(draftOrder).find(userId => Number(draftOrder[userId]) === Number(matchingSlot)) || null;
         }
-
 
         function getRosterName(rosterId) {
-            const userId =
-                getUserIdForRoster(rosterId);
-
-            const user =
-                getUser(userId);
-
-            return user
-                ? getTeamName(user)
-                : "Roster " + rosterId;
+            const user = getUser(getUserIdForRoster(rosterId));
+            return user ? getTeamName(user) : "Roster " + rosterId;
         }
 
+        function formatDraftPosition(round, position) {
+            return String(round) + "." + String(position).padStart(2, "0");
+        }
 
-        /*
-         * Current exact draft ownership
-         */
+        function getExactPickOverallNumber(round, positionInRound) {
+            const teamsInValueModel = 12;
+            if (!Number.isInteger(round) || !Number.isInteger(positionInRound) || round < 1 || positionInRound < 1 || positionInRound > teamsInValueModel) return null;
+            return ((round - 1) * teamsInValueModel) + positionInRound;
+        }
+
+        function getExactPickValue(round, positionInRound) {
+            const overallPick = getExactPickOverallNumber(round, positionInRound);
+            if (!Number.isInteger(overallPick) || overallPick < 1 || overallPick > PICK_VALUES.length) return null;
+            return PICK_VALUES[overallPick - 1];
+        }
+
+        function formatValue(value) { return Number(value).toFixed(2); }
 
         function buildCurrentDraftOwnership() {
-            if (
-                !currentDraft ||
-                !currentDraft.draft_order ||
-                !isCurrentDraftActive()
-            ) {
-                return [];
-            }
+            if (!currentDraft || !currentDraft.draft_order || !isCurrentDraftActive()) return [];
 
-            const draftOrder =
-                currentDraft.draft_order;
-
-            const numberOfTeams =
-                Object.keys(draftOrder).length;
-
-            const rounds =
-                getNumberOfDraftRounds();
-
-            const draftType =
-                String(
-                    currentDraft.type || ""
-                ).toLowerCase();
-
-            if (
-                numberOfTeams < 1 ||
-                rounds < 1
-            ) {
-                return [];
-            }
+            const draftOrder = currentDraft.draft_order;
+            const numberOfTeams = Object.keys(draftOrder).length;
+            const rounds = getNumberOfDraftRounds();
+            const draftType = String(currentDraft.type || "").toLowerCase();
+            if (numberOfTeams < 1 || rounds < 1) return [];
 
             const picks = [];
 
-            Object.entries(draftOrder).forEach(
-                ([userId, slotValue]) => {
-                    const originalSlot =
-                        Number(slotValue);
+            Object.entries(draftOrder).forEach(([userId, slotValue]) => {
+                const originalSlot = Number(slotValue);
+                const originalRosterId = getRosterIdForUser(userId);
 
-                    const originalRosterId =
-                        getRosterIdForUser(userId);
-
-                    for (
-                        let round = 1;
-                        round <= rounds;
-                        round++
-                    ) {
-                        let positionInRound =
-                            originalSlot;
-
-                        if (
-                            draftType === "snake" &&
-                            round % 2 === 0
-                        ) {
-                            positionInRound =
-                                numberOfTeams -
-                                originalSlot +
-                                1;
-                        }
-
-                        picks.push({
-                            kind: "current",
-                            season:
-                                Number(currentDraft.season),
-
-                            round:
-                                round,
-
-                            positionInRound:
-                                positionInRound,
-
-                            pickPosition:
-                                formatDraftPosition(
-                                    round,
-                                    positionInRound
-                                ),
-
-                            originalUserId:
-                                String(userId),
-
-                            originalRosterId:
-                                Number(originalRosterId),
-
-                            currentOwnerRosterId:
-                                Number(originalRosterId)
-                        });
+                for (let round = 1; round <= rounds; round++) {
+                    let positionInRound = originalSlot;
+                    if (draftType === "snake" && round % 2 === 0) {
+                        positionInRound = numberOfTeams - originalSlot + 1;
                     }
+
+                    picks.push({
+                        kind: "current",
+                        season: Number(currentDraft.season),
+                        round,
+                        positionInRound,
+                        pickPosition: formatDraftPosition(round, positionInRound),
+                        value: getExactPickValue(round, positionInRound),
+                        originalUserId: String(userId),
+                        originalRosterId: Number(originalRosterId),
+                        currentOwnerRosterId: Number(originalRosterId)
+                    });
                 }
-            );
-
-            /*
-             * A draft trade identifies the original
-             * roster, current owner and round.
-             */
-
-            currentDraftTradedPicks.forEach(
-                tradedPick => {
-                    const matchingPick =
-                        picks.find(
-                            pick =>
-                                Number(pick.round) ===
-                                    Number(
-                                        tradedPick.round
-                                    ) &&
-                                Number(
-                                    pick.originalRosterId
-                                ) ===
-                                    Number(
-                                        tradedPick.roster_id
-                                    )
-                        );
-
-                    if (matchingPick) {
-                        matchingPick.currentOwnerRosterId =
-                            Number(
-                                tradedPick.owner_id
-                            );
-                    }
-                }
-            );
-
-            return picks.sort(
-                (pickA, pickB) =>
-                    pickA.round - pickB.round ||
-                    pickA.positionInRound -
-                        pickB.positionInRound
-            );
-        }
-
-
-        function formatDraftPosition(
-            round,
-            position
-        ) {
-            return (
-                String(round) +
-                "." +
-                String(position).padStart(
-                    2,
-                    "0"
-                )
-            );
-        }
-
-
-        /*
-         * Dynasty future ownership
-         */
-
-        function getFutureSeasons() {
-            if (!isDynastyLeague()) {
-                return [];
-            }
-
-            const baseSeason =
-                Number(
-                    currentLeague?.season
-                );
-
-            if (!Number.isInteger(baseSeason)) {
-                return [
-                    ...new Set(
-                        futureTradedPicks
-                            .map(
-                                pick =>
-                                    Number(pick.season)
-                            )
-                            .filter(
-                                Number.isInteger
-                            )
-                    )
-                ].sort();
-            }
-
-            /*
-             * If the current rookie draft is complete,
-             * start future ownership with next season.
-             */
-
-            const firstFutureSeason =
-                isCurrentDraftActive()
-                    ? baseSeason + 1
-                    : Math.max(
-                        baseSeason + 1,
-                        Number(currentDraft?.season || 0) + 1
-                    );
-
-            const defaultSeasons = [
-                firstFutureSeason,
-                firstFutureSeason + 1,
-                firstFutureSeason + 2
-            ];
-
-            const tradedSeasons =
-                futureTradedPicks
-                    .map(
-                        pick =>
-                            Number(pick.season)
-                    )
-                    .filter(
-                        Number.isInteger
-                    );
-
-            return [
-                ...new Set([
-                    ...defaultSeasons,
-                    ...tradedSeasons
-                ])
-            ].sort();
-        }
-
-
-        function buildFutureDraftOwnership() {
-            if (!isDynastyLeague()) {
-                return [];
-            }
-
-            const seasons =
-                getFutureSeasons();
-
-            const rounds =
-                getNumberOfDraftRounds();
-
-            if (
-                seasons.length === 0 ||
-                rounds < 1 ||
-                leagueRosters.length === 0
-            ) {
-                return [];
-            }
-
-            const picks = [];
-
-            seasons.forEach(season => {
-                leagueRosters.forEach(
-                    originalRoster => {
-                        for (
-                            let round = 1;
-                            round <= rounds;
-                            round++
-                        ) {
-                            picks.push({
-                                kind: "future",
-                                season:
-                                    season,
-
-                                round:
-                                    round,
-
-                                originalRosterId:
-                                    Number(
-                                        originalRoster.roster_id
-                                    ),
-
-                                currentOwnerRosterId:
-                                    Number(
-                                        originalRoster.roster_id
-                                    )
-                            });
-                        }
-                    }
-                );
             });
 
-            futureTradedPicks.forEach(
-                tradedPick => {
-                    const matchingPick =
-                        picks.find(
-                            pick =>
-                                Number(pick.season) ===
-                                    Number(
-                                        tradedPick.season
-                                    ) &&
-                                Number(pick.round) ===
-                                    Number(
-                                        tradedPick.round
-                                    ) &&
-                                Number(
-                                    pick.originalRosterId
-                                ) ===
-                                    Number(
-                                        tradedPick.roster_id
-                                    )
-                        );
+            currentDraftTradedPicks.forEach(tradedPick => {
+                const matchingPick = picks.find(pick =>
+                    Number(pick.round) === Number(tradedPick.round) &&
+                    Number(pick.originalRosterId) === Number(tradedPick.roster_id)
+                );
+                if (matchingPick) matchingPick.currentOwnerRosterId = Number(tradedPick.owner_id);
+            });
 
-                    if (matchingPick) {
-                        matchingPick.currentOwnerRosterId =
-                            Number(
-                                tradedPick.owner_id
-                            );
-                    }
-                }
-            );
-
-            return picks.sort(
-                (pickA, pickB) =>
-                    pickA.season - pickB.season ||
-                    pickA.round - pickB.round ||
-                    pickA.originalRosterId -
-                        pickB.originalRosterId
-            );
+            return picks.sort((a, b) => a.round - b.round || a.positionInRound - b.positionInRound);
         }
 
+        function getFutureSeasons() {
+            if (!isDynastyLeague()) return [];
+            const baseSeason = Number(currentLeague?.season);
 
-        /*
-         * League and dropdown display
-         */
+            if (!Number.isInteger(baseSeason)) {
+                return [...new Set(futureTradedPicks.map(pick => Number(pick.season)).filter(Number.isInteger))].sort();
+            }
+
+            const firstFutureSeason = isCurrentDraftActive()
+                ? baseSeason + 1
+                : Math.max(baseSeason + 1, Number(currentDraft?.season || 0) + 1);
+
+            const defaultSeasons = [firstFutureSeason, firstFutureSeason + 1, firstFutureSeason + 2];
+            const tradedSeasons = futureTradedPicks.map(pick => Number(pick.season)).filter(Number.isInteger);
+            return [...new Set([...defaultSeasons, ...tradedSeasons])].sort();
+        }
+
+        function buildFutureDraftOwnership() {
+            if (!isDynastyLeague()) return [];
+            const seasons = getFutureSeasons();
+            const rounds = getNumberOfDraftRounds();
+            if (seasons.length === 0 || rounds < 1 || leagueRosters.length === 0) return [];
+
+            const picks = [];
+            seasons.forEach(season => {
+                leagueRosters.forEach(originalRoster => {
+                    for (let round = 1; round <= rounds; round++) {
+                        picks.push({
+                            kind: "future",
+                            season,
+                            round,
+                            value: null,
+                            originalRosterId: Number(originalRoster.roster_id),
+                            currentOwnerRosterId: Number(originalRoster.roster_id)
+                        });
+                    }
+                });
+            });
+
+            futureTradedPicks.forEach(tradedPick => {
+                const matchingPick = picks.find(pick =>
+                    Number(pick.season) === Number(tradedPick.season) &&
+                    Number(pick.round) === Number(tradedPick.round) &&
+                    Number(pick.originalRosterId) === Number(tradedPick.roster_id)
+                );
+                if (matchingPick) matchingPick.currentOwnerRosterId = Number(tradedPick.owner_id);
+            });
+
+            return picks.sort((a, b) => a.season - b.season || a.round - b.round || a.originalRosterId - b.originalRosterId);
+        }
 
         function displayLeagueDetails() {
             leagueDetails.replaceChildren();
-
             const details = [
                 "Type: " + getLeagueTypeName(),
-                "Season: " +
-                    (currentLeague?.season || "Unknown"),
-                "Draft: " +
-                    (
-                        currentDraft
-                            ? formatText(
-                                currentDraft.status
-                            )
-                            : "Not Found"
-                    ),
-                "Rounds: " +
-                    getNumberOfDraftRounds()
+                "Season: " + (currentLeague?.season || "Unknown"),
+                "Draft: " + (currentDraft ? formatText(currentDraft.status) : "Not Found"),
+                "Rounds: " + getNumberOfDraftRounds(),
+                "Value model: 12 teams"
             ];
 
             details.forEach(text => {
-                const element =
-                    document.createElement("span");
-
-                element.className =
-                    "chip";
-
-                element.textContent =
-                    text;
-
-                leagueDetails.appendChild(
-                    element
-                );
+                const chip = document.createElement("span");
+                chip.className = "chip";
+                chip.textContent = text;
+                leagueDetails.appendChild(chip);
             });
-
             leagueDetails.hidden = false;
         }
 
-
         function formatText(value) {
-            return String(value || "Unknown")
-                .replaceAll("_", " ")
-                .replace(
-                    /\b\w/g,
-                    character =>
-                        character.toUpperCase()
-                );
+            return String(value || "Unknown").replaceAll("_", " ").replace(/\b\w/g, character => character.toUpperCase());
         }
-
 
         function populateTeamDropdowns() {
-            team1Select.innerHTML =
-                '<option value="">Select Team 1</option>';
+            team1Select.innerHTML = '<option value="">Select Team 1</option>';
+            team2Select.innerHTML = '<option value="">Select Team 2</option>';
 
-            team2Select.innerHTML =
-                '<option value="">Select Team 2</option>';
-
-            const users =
-                leagueUsers
-                    .filter(
-                        user =>
-                            getRosterByUserId(
-                                user.user_id
-                            ) ||
-                            Number.isInteger(
-                                getDraftSlot(
-                                    user.user_id
-                                )
-                            )
-                    )
-                    .sort(
-                        (userA, userB) =>
-                            getTeamName(userA)
-                                .localeCompare(
-                                    getTeamName(userB)
-                                )
-                    );
+            const users = leagueUsers
+                .filter(user => getRosterByUserId(user.user_id) || Number.isInteger(getDraftSlot(user.user_id)))
+                .sort((a, b) => getTeamName(a).localeCompare(getTeamName(b)));
 
             users.forEach(user => {
-                const name =
-                    getTeamName(user);
-
-                const optionText =
-                    name === user.display_name
-                        ? user.display_name
-                        : (
-                            name +
-                            " (" +
-                            user.display_name +
-                            ")"
-                        );
-
-                addOption(
-                    team1Select,
-                    user.user_id,
-                    optionText
-                );
-
-                addOption(
-                    team2Select,
-                    user.user_id,
-                    optionText
-                );
+                const name = getTeamName(user);
+                const optionText = name === user.display_name ? user.display_name : name + " (" + user.display_name + ")";
+                addOption(team1Select, user.user_id, optionText);
+                addOption(team2Select, user.user_id, optionText);
             });
 
-            team1Select.disabled =
-                users.length === 0;
-
-            team2Select.disabled =
-                users.length === 0;
+            team1Select.disabled = users.length === 0;
+            team2Select.disabled = users.length === 0;
         }
 
-
-        function addOption(
-            select,
-            value,
-            text
-        ) {
-            const option =
-                document.createElement("option");
-
-            option.value =
-                value;
-
-            option.textContent =
-                text;
-
-            select.appendChild(
-                option
-            );
+        function addOption(select, value, text) {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = text;
+            select.appendChild(option);
         }
 
-
-        /*
-         * Team display
-         */
-
-        function displayTeam(
-            userId,
-            teamNumber
-        ) {
-            const user =
-                getUser(userId);
-
+        function displayTeam(userId, teamNumber) {
+            const user = getUser(userId);
             if (!user) {
                 resetTeam(teamNumber);
                 return;
             }
 
-            const avatar =
-                document.getElementById(
-                    "team" +
-                    teamNumber +
-                    "Avatar"
-                );
+            document.getElementById("team" + teamNumber + "Name").textContent = getTeamName(user);
+            document.getElementById("team" + teamNumber + "Username").textContent = "@" + user.display_name;
 
-            document.getElementById(
-                "team" +
-                teamNumber +
-                "Name"
-            ).textContent =
-                getTeamName(user);
+            const info = document.getElementById("team" + teamNumber + "Info");
+            const slot = getDraftSlot(userId);
 
-            document.getElementById(
-                "team" +
-                teamNumber +
-                "Username"
-            ).textContent =
-                "@" +
-                user.display_name;
+            if (isCurrentDraftActive() && Number.isInteger(slot)) info.textContent = "Original draft slot: " + slot;
+            else if (isDynastyLeague()) info.textContent = "Future dynasty picks";
+            else info.textContent = "Current draft completed";
 
-            const info =
-                document.getElementById(
-                    "team" +
-                    teamNumber +
-                    "Info"
-                );
-
-            const slot =
-                getDraftSlot(userId);
-
-            if (
-                isCurrentDraftActive() &&
-                Number.isInteger(slot)
-            ) {
-                info.textContent =
-                    "Original draft slot: " +
-                    slot;
-            }
-            else if (isDynastyLeague()) {
-                info.textContent =
-                    "Future dynasty picks";
-            }
-            else {
-                info.textContent =
-                    "Current draft completed";
-            }
-
-            renderAvatar(
-                user,
-                avatar
-            );
-
-            renderTeamPicks(
-                userId,
-                teamNumber
-            );
+            renderAvatar(user, document.getElementById("team" + teamNumber + "Avatar"));
+            renderTeamPicks(userId, teamNumber);
         }
-
 
         function renderAvatar(user, container) {
             container.replaceChildren();
-
             if (!user.avatar) {
-                container.textContent =
-                    "🏈";
-
+                container.textContent = "🏈";
                 return;
             }
 
-            const image =
-                document.createElement("img");
-
-            image.src =
-                AVATAR_BASE +
-                "/" +
-                user.avatar;
-
-            image.alt =
-                user.display_name +
-                " avatar";
-
-            image.addEventListener(
-                "error",
-                function () {
-                    container.replaceChildren();
-                    container.textContent =
-                        "🏈";
-                },
-                {
-                    once: true
-                }
-            );
-
+            const image = document.createElement("img");
+            image.src = AVATAR_BASE + "/" + user.avatar;
+            image.alt = user.display_name + " avatar";
+            image.addEventListener("error", () => {
+                container.replaceChildren();
+                container.textContent = "🏈";
+            }, { once: true });
             container.appendChild(image);
         }
 
-
-        function renderTeamPicks(
-            userId,
-            teamNumber
-        ) {
-            const container =
-                document.getElementById(
-                    "team" +
-                    teamNumber +
-                    "Picks"
-                );
-
-            const rosterId =
-                getRosterIdForUser(userId);
-
-            let availablePicks = [];
-
-            /*
-             * Active drafts use exact numbered picks.
-             */
+        function renderTeamPicks(userId, teamNumber) {
+            const container = document.getElementById("team" + teamNumber + "Picks");
+            const rosterId = getRosterIdForUser(userId);
+            const availablePicks = [];
 
             if (isCurrentDraftActive()) {
-                availablePicks.push(
-                    ...currentDraftOwnership.filter(
-                        pick =>
-                            Number(
-                                pick.currentOwnerRosterId
-                            ) ===
-                            Number(rosterId)
-                    )
-                );
+                availablePicks.push(...currentDraftOwnership.filter(pick => Number(pick.currentOwnerRosterId) === Number(rosterId)));
             }
 
-            /*
-             * Dynasty also includes future ownership.
-             */
-
             if (isDynastyLeague()) {
-                availablePicks.push(
-                    ...futureDraftOwnership.filter(
-                        pick =>
-                            Number(
-                                pick.currentOwnerRosterId
-                            ) ===
-                            Number(rosterId)
-                    )
-                );
+                availablePicks.push(...futureDraftOwnership.filter(pick => Number(pick.currentOwnerRosterId) === Number(rosterId)));
             }
 
             if (availablePicks.length === 0) {
-                let message =
-                    "No available draft picks were found.";
-
-                if (
-                    !isDynastyLeague() &&
-                    !isCurrentDraftActive()
-                ) {
-                    message =
-                        "This league's current draft has already been completed.";
-                }
-
-                showPickMessage(
-                    container,
-                    message
-                );
-
+                const message = !isDynastyLeague() && !isCurrentDraftActive()
+                    ? "This league's current draft has already been completed."
+                    : "No available draft picks were found.";
+                showPickMessage(container, message);
                 updateTradeAnalysis();
                 return;
             }
 
             container.replaceChildren();
-            container.className =
-                "pick-list";
+            container.className = "pick-list";
 
-            const currentPicks =
-                availablePicks.filter(
-                    pick =>
-                        pick.kind === "current"
-                );
+            const currentPicks = availablePicks.filter(pick => pick.kind === "current");
+            const futurePicks = availablePicks.filter(pick => pick.kind === "future");
 
-            const futurePicks =
-                availablePicks.filter(
-                    pick =>
-                        pick.kind === "future"
-                );
+            if (currentPicks.length > 0) renderPickGroup(container, "Current draft", currentPicks, teamNumber, rosterId);
 
-            if (currentPicks.length > 0) {
-                renderPickGroup(
-                    container,
-                    "Current draft",
-                    currentPicks,
-                    teamNumber,
-                    rosterId
-                );
-            }
-
-            const seasons = [
-                ...new Set(
-                    futurePicks.map(
-                        pick =>
-                            pick.season
-                    )
-                )
-            ].sort();
-
-            seasons.forEach(season => {
-                renderPickGroup(
-                    container,
-                    String(season),
-                    futurePicks.filter(
-                        pick =>
-                            pick.season === season
-                    ),
-                    teamNumber,
-                    rosterId
-                );
+            [...new Set(futurePicks.map(pick => pick.season))].sort().forEach(season => {
+                renderPickGroup(container, String(season), futurePicks.filter(pick => pick.season === season), teamNumber, rosterId);
             });
 
             updateTradeAnalysis();
         }
 
+        function renderPickGroup(container, heading, picks, teamNumber, selectedRosterId) {
+            const group = document.createElement("div");
+            group.className = "pick-group";
 
-        function renderPickGroup(
-            container,
-            heading,
-            picks,
-            teamNumber,
-            selectedRosterId
-        ) {
-            const group =
-                document.createElement("div");
+            const title = document.createElement("div");
+            title.className = "pick-group-title";
+            title.textContent = heading;
 
-            group.className =
-                "pick-group";
-
-            const title =
-                document.createElement("div");
-
-            title.className =
-                "pick-group-title";
-
-            title.textContent =
-                heading;
-
-            const buttons =
-                document.createElement("div");
-
-            buttons.className =
-                "pick-group-buttons";
-
-            picks.forEach(pick => {
-                buttons.appendChild(
-                    createPickButton(
-                        pick,
-                        teamNumber,
-                        selectedRosterId
-                    )
-                );
-            });
+            const buttons = document.createElement("div");
+            buttons.className = "pick-group-buttons";
+            picks.forEach(pick => buttons.appendChild(createPickButton(pick, teamNumber, selectedRosterId)));
 
             group.appendChild(title);
             group.appendChild(buttons);
             container.appendChild(group);
         }
 
+        function createPickButton(pick, teamNumber, selectedRosterId) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "pick-button";
 
-        function createPickButton(
-            pick,
-            teamNumber,
-            selectedRosterId
-        ) {
-            const button =
-                document.createElement("button");
-
-            button.type =
-                "button";
-
-            button.className =
-                "pick-button";
-
-            const mainText =
-                document.createElement("span");
-
-            mainText.textContent =
-                pick.kind === "current"
-                    ? pick.pickPosition
-                    : (
-                        pick.season +
-                        " Round " +
-                        pick.round
-                    );
-
+            const mainText = document.createElement("span");
+            mainText.textContent = pick.kind === "current" ? pick.pickPosition : pick.season + " Round " + pick.round;
             button.appendChild(mainText);
 
-            if (
-                Number(pick.originalRosterId) !==
-                Number(selectedRosterId)
-            ) {
-                const origin =
-                    document.createElement("span");
+            if (pick.kind === "current" && Number.isFinite(pick.value)) {
+                const valueText = document.createElement("span");
+                valueText.className = "pick-value";
+                valueText.textContent = formatValue(pick.value) + " points";
+                button.appendChild(valueText);
+            }
 
-                origin.className =
-                    "pick-origin";
-
-                origin.textContent =
-                    "via " +
-                    getRosterName(
-                        pick.originalRosterId
-                    );
-
+            if (Number(pick.originalRosterId) !== Number(selectedRosterId)) {
+                const origin = document.createElement("span");
+                origin.className = "pick-origin";
+                origin.textContent = "via " + getRosterName(pick.originalRosterId);
                 button.appendChild(origin);
             }
 
-            button.dataset.kind =
-                pick.kind;
+            button.dataset.kind = pick.kind;
+            button.dataset.season = String(pick.season);
+            button.dataset.round = String(pick.round);
+            button.dataset.pickPosition = pick.pickPosition || "";
+            button.dataset.pickValue = Number.isFinite(pick.value) ? String(pick.value) : "";
+            button.dataset.originalRosterId = String(pick.originalRosterId);
 
-            button.dataset.season =
-                String(pick.season);
-
-            button.dataset.round =
-                String(pick.round);
-
-            button.dataset.pickPosition =
-                pick.pickPosition || "";
-
-            button.dataset.originalRosterId =
-                String(pick.originalRosterId);
-
-            button.addEventListener(
-                "click",
-                function () {
-                    this.classList.toggle(
-                        "selected"
-                    );
-
-                    updateTradeAnalysis();
-                }
-            );
+            button.addEventListener("click", function () {
+                this.classList.toggle("selected");
+                updateTradeAnalysis();
+            });
 
             return button;
         }
 
-
-        function showPickMessage(
-            container,
-            message
-        ) {
+        function showPickMessage(container, message) {
             container.replaceChildren();
-            container.className =
-                "pick-placeholder";
-
-            container.textContent =
-                message;
+            container.className = "pick-placeholder";
+            container.textContent = message;
         }
 
-
-        /*
-         * Trade-selection summary
-         */
-
-        function getSelectedPickLabels(
-            teamNumber
-        ) {
-            return Array.from(
-                document.querySelectorAll(
-                    "#team" +
-                    teamNumber +
-                    "Picks " +
-                    ".pick-button.selected"
-                )
-            ).map(button => {
-                if (
-                    button.dataset.kind ===
-                    "current"
-                ) {
-                    return button.dataset.pickPosition;
-                }
-
-                return (
-                    button.dataset.season +
-                    " Round " +
-                    button.dataset.round
-                );
+        function getSelectedPicks(teamNumber) {
+            return Array.from(document.querySelectorAll("#team" + teamNumber + "Picks .pick-button.selected")).map(button => {
+                const rawValue = button.dataset.pickValue;
+                const value = rawValue === "" ? null : Number(rawValue);
+                return {
+                    kind: button.dataset.kind,
+                    label: button.dataset.kind === "current"
+                        ? button.dataset.pickPosition
+                        : button.dataset.season + " Round " + button.dataset.round,
+                    value: Number.isFinite(value) ? value : null
+                };
             });
         }
 
+        function getSelectedTeamName(teamNumber) {
+            const select = document.getElementById("team" + teamNumber + "Select");
+            if (!select.value) return "Team " + teamNumber;
+            const user = getUser(select.value);
+            return user ? getTeamName(user) : "Team " + teamNumber;
+        }
+
+        function totalValuedPicks(picks) {
+            return picks.reduce((total, pick) => total + (Number.isFinite(pick.value) ? pick.value : 0), 0);
+        }
+
+        function countUnvaluedPicks(picks) {
+            return picks.filter(pick => !Number.isFinite(pick.value)).length;
+        }
 
         function updateTradeAnalysis() {
-            const team1 =
-                getSelectedPickLabels(1);
+            const team1Picks = getSelectedPicks(1);
+            const team2Picks = getSelectedPicks(2);
+            const team1Name = getSelectedTeamName(1);
+            const team2Name = getSelectedTeamName(2);
 
-            const team2 =
-                getSelectedPickLabels(2);
+            const givenValue = totalValuedPicks(team1Picks);
+            const receivedValue = totalValuedPicks(team2Picks);
+            const unvaluedCount = countUnvaluedPicks(team1Picks) + countUnvaluedPicks(team2Picks);
 
-            document.getElementById(
-                "team1Summary"
-            ).textContent =
-                team1.length +
-                " selected";
+            document.getElementById("team1Summary").textContent = team1Picks.length
+                ? team1Name + " gives " + formatValue(givenValue)
+                : "0 selected";
 
-            document.getElementById(
-                "team2Summary"
-            ).textContent =
-                team2.length +
-                " selected";
+            document.getElementById("team2Summary").textContent = team2Picks.length
+                ? team1Name + " receives " + formatValue(receivedValue)
+                : "0 selected";
 
-            const total =
-                team1.length +
-                team2.length;
+            const score = document.getElementById("tradeScore");
+            const status = document.getElementById("tradeStatus");
+            const message = document.getElementById("analysisMessage");
 
-            if (total === 0) {
-                document.getElementById(
-                    "tradeScore"
-                ).textContent =
-                    "Select picks to analyse a trade";
-
-                document.getElementById(
-                    "tradeStatus"
-                ).textContent =
-                    "No picks selected";
-
-                document.getElementById(
-                    "analysisMessage"
-                ).textContent =
-                    "Pick values will be added after ownership has been verified.";
-
+            if (team1Picks.length === 0 || team2Picks.length === 0) {
+                score.textContent = "🏈 Select draft picks for both teams";
+                status.textContent = "Both sides required";
+                message.textContent = "Select the picks " + team1Name + " gives and the picks received from " + team2Name + ".";
                 return;
             }
 
-            document.getElementById(
-                "tradeScore"
-            ).textContent =
-                "Picks selected";
+            if (unvaluedCount > 0) {
+                score.textContent = "⚠️ Exact value unavailable";
+                status.textContent = "Future picks selected";
+                message.textContent = "This trade includes " + unvaluedCount + " future " + (unvaluedCount === 1 ? "pick" : "picks") + " without confirmed draft positions. Future-pick values will be added separately.";
+                return;
+            }
 
-            document.getElementById(
-                "tradeStatus"
-            ).textContent =
-                "Values not added yet";
+            const difference = Math.abs(givenValue - receivedValue);
+            const average = (givenValue + receivedValue) / 2;
+            const percentage = average === 0 ? 0 : difference / average;
+            const percentageText = (percentage * 100).toFixed(1) + "%";
+            const team1Wins = receivedValue > givenValue;
+            const winningTeam = team1Wins ? team1Name : team2Name;
 
-            document.getElementById(
-                "analysisMessage"
-            ).textContent =
-                "Team 1: " +
-                (
-                    team1.length
-                        ? team1.join(", ")
-                        : "none"
-                ) +
-                ". Team 2: " +
-                (
-                    team2.length
-                        ? team2.join(", ")
-                        : "none"
-                ) +
-                ".";
+            status.textContent = "Difference: " + formatValue(difference) + " (" + percentageText + ")";
+
+            if (percentage <= 0.02) {
+                score.textContent = "🤝 Very Fair Trade";
+                message.textContent = "Slight edge to " + winningTeam + " by " + formatValue(difference) + " points (" + percentageText + ").";
+            } else if (percentage <= 0.04) {
+                score.textContent = "🤝 Fair Trade";
+                message.textContent = winningTeam + " receives the better value by " + formatValue(difference) + " points (" + percentageText + ").";
+            } else if (percentage <= 0.08 && team1Wins) {
+                score.textContent = "✅ Good Trade for " + team1Name;
+                message.textContent = team1Name + " gains " + formatValue(difference) + " points of value (" + percentageText + ").";
+            } else if (percentage <= 0.08) {
+                score.textContent = "⚠️ Slight Overpay by " + team1Name;
+                message.textContent = team1Name + " gives up " + formatValue(difference) + " more points than received (" + percentageText + ").";
+            } else if (team1Wins) {
+                score.textContent = "✅ Excellent Trade for " + team1Name;
+                message.textContent = team1Name + " gains " + formatValue(difference) + " points of value (" + percentageText + ").";
+            } else {
+                score.textContent = "❌ Significant Overpay by " + team1Name;
+                message.textContent = team1Name + " gives up " + formatValue(difference) + " more points than received (" + percentageText + ").";
+            }
         }
-
-
-        /*
-         * Reset
-         */
 
         function resetLeague() {
             currentLeague = null;
             currentDraft = null;
-
             leagueUsers = [];
             leagueRosters = [];
             leagueDrafts = [];
-
             futureTradedPicks = [];
             currentDraftTradedPicks = [];
-
             currentDraftOwnership = [];
             futureDraftOwnership = [];
 
             team1Select.disabled = true;
             team2Select.disabled = true;
-
-            team1Select.innerHTML =
-                '<option value="">Loading teams...</option>';
-
-            team2Select.innerHTML =
-                '<option value="">Loading teams...</option>';
-
+            team1Select.innerHTML = '<option value="">Loading teams...</option>';
+            team2Select.innerHTML = '<option value="">Loading teams...</option>';
             leagueDetails.hidden = true;
             leagueDetails.replaceChildren();
-
             resetTeam(1);
             resetTeam(2);
-
             updateTradeAnalysis();
         }
 
-
         function resetTeam(teamNumber) {
-            document.getElementById(
-                "team" +
-                teamNumber +
-                "Name"
-            ).textContent =
-                "Team " +
-                teamNumber +
-                " Name";
+            document.getElementById("team" + teamNumber + "Name").textContent = "Team " + teamNumber + " Name";
+            document.getElementById("team" + teamNumber + "Username").textContent = "@username";
+            document.getElementById("team" + teamNumber + "Info").textContent = "";
 
-            document.getElementById(
-                "team" +
-                teamNumber +
-                "Username"
-            ).textContent =
-                "@username";
-
-            document.getElementById(
-                "team" +
-                teamNumber +
-                "Info"
-            ).textContent =
-                "";
-
-            const avatar =
-                document.getElementById(
-                    "team" +
-                    teamNumber +
-                    "Avatar"
-                );
-
+            const avatar = document.getElementById("team" + teamNumber + "Avatar");
             avatar.replaceChildren();
-            avatar.textContent =
-                "🏈";
+            avatar.textContent = "🏈";
 
-            showPickMessage(
-                document.getElementById(
-                    "team" +
-                    teamNumber +
-                    "Picks"
-                ),
-                "Select a team to display its draft picks."
-            );
+            showPickMessage(document.getElementById("team" + teamNumber + "Picks"), "Select a team to display its draft picks.");
         }
 
+        team1Select.addEventListener("change", function () {
+            if (this.value) displayTeam(this.value, 1);
+            else { resetTeam(1); updateTradeAnalysis(); }
+        });
 
-        /*
-         * Events
-         */
+        team2Select.addEventListener("change", function () {
+            if (this.value) displayTeam(this.value, 2);
+            else { resetTeam(2); updateTradeAnalysis(); }
+        });
 
-        team1Select.addEventListener(
-            "change",
-            function () {
-                if (this.value) {
-                    displayTeam(
-                        this.value,
-                        1
-                    );
-                }
-                else {
-                    resetTeam(1);
-                    updateTradeAnalysis();
-                }
-            }
-        );
+        loadButton.addEventListener("click", loadLeague);
+        leagueIdInput.addEventListener("keydown", event => { if (event.key === "Enter") loadLeague(); });
+        themeButton.addEventListener("click", toggleTheme);
 
-
-        team2Select.addEventListener(
-            "change",
-            function () {
-                if (this.value) {
-                    displayTeam(
-                        this.value,
-                        2
-                    );
-                }
-                else {
-                    resetTeam(2);
-                    updateTradeAnalysis();
-                }
-            }
-        );
-
-
-        loadButton.addEventListener(
-            "click",
-            loadLeague
-        );
-
-
-        leagueIdInput.addEventListener(
-            "keydown",
-            function (event) {
-                if (event.key === "Enter") {
-                    loadLeague();
-                }
-            }
-        );
-
-
-        themeButton.addEventListener(
-            "click",
-            toggleTheme
-        );
-
-
-        /*
-         * Initial setup
-         */
-
-        if (
-            localStorage.getItem("theme") ===
-            "dark"
-        ) {
-            document.body.classList.add(
-                "dark"
-            );
-        }
-
+        if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark");
         updateThemeButton();
     </script>
 </body>
