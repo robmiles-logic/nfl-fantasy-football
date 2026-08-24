@@ -550,43 +550,99 @@
         }
         function populateTeamDropdowns() {
 
-    const team1Select =
-        document.getElementById("team1Select");
+            const team1Select =
+                document.getElementById("team1Select");
 
-    const team2Select =
-        document.getElementById("team2Select");
+            const team2Select =
+                document.getElementById("team2Select");
 
-    team1Select.innerHTML =
-        '<option value="">Select Team 1</option>';
+            team1Select.innerHTML =
+                '<option value="">Select Team 1</option>';
 
-    team2Select.innerHTML =
-        '<option value="">Select Team 2</option>';
+            team2Select.innerHTML =
+                '<option value="">Select Team 2</option>';
 
-    leagueUsers.forEach(user => {
+            leagueUsers.forEach(user => {
 
-        const option1 =
-            document.createElement("option");
+                const option1 =
+                    document.createElement("option");
 
-        option1.value = user.user_id;
-        option1.textContent =
-            user.display_name;
+                option1.value = user.user_id;
+                option1.textContent =
+                    user.display_name;
 
-        team1Select.appendChild(option1);
+                team1Select.appendChild(option1);
 
-        const option2 =
-            document.createElement("option");
+                const option2 =
+                    document.createElement("option");
 
-        option2.value = user.user_id;
-        option2.textContent =
-            user.display_name;
+                option2.value = user.user_id;
+                option2.textContent =
+                    user.display_name;
 
-        team2Select.appendChild(option2);
+                team2Select.appendChild(option2);
 
-    });
+            });
 
-    team1Select.disabled = false;
-    team2Select.disabled = false;
+team1Select.disabled = false;
+team2Select.disabled = false;
+
+team1Select.addEventListener(
+    "change",
+    () => updateTeamCard(
+        team1Select.value,
+        1
+    )
+);
+
+team2Select.addEventListener(
+    "change",
+    () => updateTeamCard(
+        team2Select.value,
+        2
+    )
+);
 }
+        function updateTeamCard(userId, teamNumber) {
+
+    const user =
+        leagueUsers.find(
+            u => u.user_id === userId
+        );
+
+    if (!user) return;
+
+    const teamNameElement =
+        document.getElementById(
+            `team${teamNumber}Name`
+        );
+
+    const usernameElement =
+        document.getElementById(
+            `team${teamNumber}Username`
+        );
+
+    const avatarElement =
+        document.getElementById(
+            `team${teamNumber}Avatar`
+        );
+
+    teamNameElement.textContent =
+        user.metadata?.team_name ||
+        user.display_name;
+
+    usernameElement.textContent =
+        `@${user.display_name}`;
+
+    if (user.avatar) {
+
+        avatarElement.innerHTML =
+            `<img src="https://sleepercdn.com/avatars/${user.avatar}"lse {
+
+        avatarElement.innerHTML = "🏈";
+    }
+}
+`
 
         themeButton.addEventListener("click", toggleTheme);
 
