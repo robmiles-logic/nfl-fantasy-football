@@ -1,307 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Dynasty Trade Calculator</title>
+    <title>NFL Draft Pick Trade Calculator</title>
 
-<style>
+    <style>
+        :root {
+            --background: #f3f4f6;
+            --card-background: #ffffff;
+            --text: #111827;
+            --secondary-text: #6b7280;
+            --border: #d1d5db;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --placeholder: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
 
-:root{
-    --bg:#f3f4f6;
-    --card:#ffffff;
-    --text:#111827;
-    --secondary:#6b7280;
-    --border:#d1d5db;
-    --accent:#2563eb;
-    --pick:#e5e7eb;
-    --pick-selected:#10b981;
-}
+        body.dark {
+            --background: #111827;
+            --card-background: #1f2937;
+            --text: #f9fafb;
+            --secondary-text: #9ca3af;
+            --border: #4b5563;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --placeholder: #374151;
+            --shadow: rgba(0, 0, 0, 0.35);
+        }
 
-.dark{
-    --bg:#111827;
-    --card:#1f2937;
-    --text:#f9fafb;
-    --secondary:#9ca3af;
-    --border:#374151;
-    --accent:#3b82f6;
-    --pick:#374151;
-    --pick-selected:#059669;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-*{
-    box-sizing:border-box;
-}
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--background);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease;
+        }
 
-body{
-    margin:0;
-    padding:20px;
-    font-family:Segoe UI,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    transition:.3s;
-}
+        button,
+        input,
+        select {
+            font: inherit;
+        }
 
-.container{
-    max-width:1200px;
-    margin:auto;
-}
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-}
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
 
-.card{
-    background:var(--card);
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-}
+        .header h1 {
+            margin: 0;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+        }
 
-.toggle-btn{
-    border:none;
-    background:var(--accent);
-    color:white;
-    padding:10px 16px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-}
+        .theme-button {
+            flex-shrink: 0;
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 16px;
+            background: var(--primary);
+            color: #ffffff;
+            cursor: pointer;
+            font-weight: 700;
+        }
 
-input{
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--text);
-}
+        .theme-button:hover {
+            background: var(--primary-hover);
+        }
 
-.teams{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
+        .card {
+            background: var(--card-background);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 3px 12px var(--shadow);
+        }
 
-.team-card{
-    text-align:center;
-}
+        .league-card {
+            margin-bottom: 20px;
+        }
 
-.avatar{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    margin:auto;
-    display:block;
-    object-fit:cover;
-    border:3px solid var(--accent);
-}
+        .card-title {
+            margin: 0 0 16px;
+            font-size: 1.3rem;
+        }
 
-.team-name{
-    font-size:22px;
-    font-weight:bold;
-    margin-top:10px;
-}
+        .league-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+        }
 
-.username{
-    color:var(--secondary);
-}
+        .league-input,
+        .team-select {
+            width: 100%;
+            min-height: 46px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 11px 12px;
+            background: var(--card-background);
+            color: var(--text);
+        }
 
-.pick-section{
-    margin-top:20px;
-}
+        .league-input:focus,
+        .team-select:focus {
+            outline: 3px solid rgba(37, 99, 235, 0.2);
+            border-color: var(--primary);
+        }
 
-.pick-grid{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-}
+        .load-button {
+            min-height: 46px;
+            border: 0;
+            border-radius: 9px;
+            padding: 0 22px;
+            background: var(--primary);
+            color: #ffffff;
+            cursor: pointer;
+            font-weight: 700;
+        }
 
-.pick-btn{
-    border:none;
-    background:var(--pick);
-    color:var(--text);
-    padding:10px 15px;
-    border-radius:20px;
-    cursor:pointer;
-    transition:.2s;
-}
+        .load-button:hover {
+            background: var(--primary-hover);
+        }
 
-.pick-btn.selected{
-    background:var(--pick-selected);
-    color:white;
-}
+        .status-message {
+            min-height: 24px;
+            margin: 12px 0 0;
+            color: var(--secondary-text);
+        }
 
-.result{
-    text-align:center;
-}
+        .teams {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 20px;
+        }
 
-.result h2{
-    margin-bottom:10px;
-}
+        .team-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 470px;
+        }
 
-.trade-score{
-    font-size:32px;
-    font-weight:bold;
-}
+        .team-heading {
+            margin: 0 0 16px;
+            text-align: left;
+            font-size: 1.3rem;
+        }
 
-.value-line{
-    margin-top:12px;
-    line-height:1.8;
-}
+        .team-select {
+            margin-bottom: 22px;
+        }
 
-@media(max-width:768px){
+        .team-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 22px;
+        }
 
-    .teams{
-        grid-template-columns:1fr;
-    }
+        .avatar-placeholder {
+            display: grid;
+            place-items: center;
+            width: 96px;
+            height: 96px;
+            margin-bottom: 14px;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            background: var(--placeholder);
+            color: var(--secondary-text);
+            font-size: 2.2rem;
+            overflow: hidden;
+        }
 
-    .header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:10px;
-    }
-}
+        .avatar-placeholder img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
 
-</style>
+        .team-name {
+            margin-bottom: 5px;
+            font-size: 1.35rem;
+            font-weight: 750;
+        }
+
+        .username {
+            color: var(--secondary-text);
+        }
+
+        .picks-section {
+            flex: 1;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .picks-section h3 {
+            margin: 0 0 12px;
+            text-align: center;
+        }
+
+        .picks-placeholder {
+            display: grid;
+            place-items: center;
+            min-height: 105px;
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            color: var(--secondary-text);
+            text-align: center;
+        }
+
+        .pick-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pick-button {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 10px 15px;
+            background: var(--placeholder);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 650;
+        }
+
+        .pick-button.selected {
+            border-color: #059669;
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .analysis-card {
+            text-align: center;
+        }
+
+        .analysis-card h2 {
+            margin-top: 0;
+        }
+
+        .trade-score {
+            margin: 12px 0;
+            font-size: clamp(1.7rem, 5vw, 2.3rem);
+            font-weight: 800;
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            max-width: 720px;
+            margin: 20px auto 0;
+        }
+
+        .value-box {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .value-label {
+            margin-bottom: 5px;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .value-number {
+            font-size: 1.25rem;
+            font-weight: 750;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 14px;
+            }
+
+            .header {
+                align-items: flex-start;
+            }
+
+            .theme-button {
+                padding: 10px 12px;
+            }
+
+            .league-row {
+                grid-template-columns: 1fr;
+            }
+
+            .load-button {
+                width: 100%;
+            }
+
+            .teams {
+                grid-template-columns: 1fr;
+            }
+
+            .team-card {
+                min-height: 430px;
+            }
+
+            .value-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 460px) {
+            .header {
+                flex-direction: column;
+            }
+
+            .theme-button {
+                width: 100%;
+            }
+
+            .card {
+                padding: 17px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <main class="container">
+        <header class="header">
+            <h1>🏈 NFL Draft Pick Trade Calculator</h1>
 
-<div class="container">
+            <button
+                id="themeButton"
+                class="theme-button"
+                type="button"
+            >
+                🌙 Dark mode
+            </button>
+        </header>
 
-    <div class="header">
-        <h1>🏈 Dynasty Trade Calculator</h1>
+        <section class="card league-card">
+            <h2 class="card-title">Load Sleeper League</h2>
 
-        <button class="toggle-btn" onclick="toggleTheme()">
-            🌙 Dark / ☀️ Light
-        </button>
-    </div>
+            <div class="league-row">
+                <input
+                    id="leagueId"
+                    class="league-input"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="Enter Sleeper League ID"
+                    aria-label="Sleeper League ID"
+                >
 
-    <div class="card">
-        <h2>League</h2>
+                <button
+                    id="loadLeagueButton"
+                    class="load-button"
+                    type="button"
+                >
+                    Load League
+                </button>
+            </div>
 
-        <input
-            type="text"
-            placeholder="Enter Sleeper League ID">
-    </div>
+            <p id="leagueStatus" class="status-message">
+                Enter a league ID to get started.
+            </p>
+        </section>
 
-    <div class="teams">
+        <section class="teams">
+            <article class="card team-card">
+                <h2 class="team-heading">Team 1</h2>
 
-        <div class="card team-card">
+                <select
+                    id="team1Select"
+                    class="team-select"
+                    aria-label="Select Team 1"
+                    disabled
+                >
+                    <option value="">Load a league first</option>
+                </select>
 
-            <img
-                class="avatar"
-                src="https://via.placeholder.com/100"
-                alt="Team 1">
+                <div class="team-profile">
+                    <div
+                        id="team1Avatar"
+                        class="avatar-placeholder"
+                        aria-label="Team 1 avatar"
+                    >
+                        🏈
+                    </div>
 
-            <div class="team-name">
-                Team 1 Name
-     </div>
+                    <div id="team1Name" class="team-name">
+                        Team 1 Name
+                    </div>
 
-            <div class="pick-section">
-
-                <h3>Draft Picks</h3>
-
-                <div class="pick-grid">
-
-                    <button class="pick-btn">2027 1st</button>
-                    <button class="pick-btn">2027 2nd</button>
-                    <button class="pick-btn">2028 1st</button>
-                    <button class="pick-btn">2028 2nd</button>
-                    <button class="pick-btn">2029 1st</button>
-
+                    <div id="team1Username" class="username">
+                        @username
+                    </div>
                 </div>
 
-            </div>
+                <div class="picks-section">
+                    <h3>Available Draft Picks</h3>
 
-        </div>
+                    <div id="team1Picks" class="picks-placeholder">
+                        Select a team to display the draft picks owned by
+                        that team.
+                    </div>
+                </div>
+            </article>
 
-        <div class="card team-card">
+            <article class="card team-card">
+                <h2 class="team-heading">Team 2</h2>
 
-            <img
-                class="avatar"
-         <div class="team-name">
-                Team 2 Name
-            </div>
+                <select
+                    id="team2Select"
+                    class="team-select"
+                    aria-label="Select Team 2"
+                    disabled
+                >
+                    <option value="">Load a league first</option>
+                </select>
 
-            <div class="username">
-                @Username
-            </div>
+                <div class="team-profile">
+                    <div
+                        id="team2Avatar"
+                        class="avatar-placeholder"
+                        aria-label="Team 2 avatar"
+                    >
+                        🏈
+                    </div>
 
-            <div class="pick-section">
+                    <div id="team2Name" class="team-name">
+                        Team 2 Name
+                    </div>
 
-                <h3>Draft Picks</h3>
-
-                <div class="pick-grid">
-
-                    <button class="pick-btn">2027 1st</button>
-                    <button class="pick-btn">2027 2nd</button>
-                    <button class="pick-btn">2028 1st</button>
-                    <button class="pick-btn">2028 2nd</button>
-                    <button class="pick-btn">2029 1st</button>
-
+                    <div id="team2Username" class="username">
+                        @username
+                    </div>
                 </div>
 
+                <div class="picks-section">
+                    <h3>Available Draft Picks</h3>
+
+                    <div id="team2Picks" class="picks-placeholder">
+                        Select a team to display the draft picks owned by
+                        that team.
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="card analysis-card">
+            <h2>Trade Analysis</h2>
+
+            <div id="tradeScore" class="trade-score">
+                Select picks to analyse a trade
             </div>
 
-        </div>
+            <div class="value-grid">
+                <div class="value-box">
+                    <div class="value-label">Team 1 value</div>
+                    <div id="team1Value" class="value-number">0.00</div>
+                </div>
 
-    </div>
+                <div class="value-box">
+                    <div class="value-label">Team 2 value</div>
+                    <div id="team2Value" class="value-number">0.00</div>
+                </div>
 
-    <div class="card result">
+                <div class="value-box">
+                    <div class="value-label">Difference</div>
+                    <div id="tradeDifference" class="value-number">0.00</div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        <h2>Trade Analysis</h2>
+    <script>
+        const themeButton = document.getElementById("themeButton");
+        const loadLeagueButton =
+            document.getElementById("loadLeagueButton");
+        const leagueIdInput = document.getElementById("leagueId");
+        const leagueStatus = document.getElementById("leagueStatus");
 
-        <div class="trade-score">
-            🤝 Fair Trade
-        </div>
+        function updateThemeButton() {
+            const darkModeEnabled =
+                document.body.classList.contains("dark");
 
-        <div class="value-line">
-            Team 1 Value: 102.5<br>
-            Team 2 Value: 98.2<br>
-            Difference: +4.3
-        </div>
+            themeButton.textContent = darkModeEnabled
+                ? "☀️ Light mode"
+                : "🌙 Dark mode";
+        }
 
-    </div>
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
 
-</div>
+            const selectedTheme =
+                document.body.classList.contains("dark")
+                    ? "dark"
+                    : "light";
 
-<script>
+            localStorage.setItem("theme", selectedTheme);
+            updateThemeButton();
+        }
 
-document.querySelectorAll('.pick-btn').forEach(button => {
+        function prepareForLeagueLoad() {
+            const leagueId = leagueIdInput.value.trim();
 
-    button.addEventListener('click', function(){
+            if (!leagueId) {
+                leagueStatus.textContent =
+                    "Please enter a Sleeper League ID.";
+                leagueIdInput.focus();
+                return;
+            }
 
-        this.classList.toggle('selected');
+            leagueStatus.textContent =
+                "League ID entered. Sleeper API connection will be added in Step 3.";
+        }
 
-    });
+        themeButton.addEventListener("click", toggleTheme);
 
-});
+        loadLeagueButton.addEventListener(
+            "click",
+            prepareForLeagueLoad
+        );
 
-function toggleTheme(){
+        leagueIdInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                prepareForLeagueLoad();
+            }
+        });
 
-    document.body.classList.toggle('dark');
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark");
+        }
 
-    if(document.body.classList.contains('dark')){
-        localStorage.setItem('theme','dark');
-    }
-    else{
-        localStorage.setItem('theme','light');
-    }
-}
-
-if(localStorage.getItem('theme') === 'dark'){
-    document.body.classList.add('dark');
-}
-
-</script>
-
+        updateThemeButton();
+    </script>
 </body>
 </html>
