@@ -463,267 +463,871 @@
         </section>
     </main>
 
-    <script>
-        const themeButton = document.getElementById("themeButton");
-        const loadLeagueButton =
-            document.getElementById("loadLeagueButton");
-        const leagueIdInput = document.getElementById("leagueId");
-        const leagueStatus = document.getElementById("leagueStatus");
+   <script>
+    const themeButton =
+        document.getElementById("themeButton");
 
-        let leagueUsers = [];
-        let leagueRosters = [];
-        let allDraftPicks = [];
-        let team1SelectedPicks = [];
-        let team2SelectedPicks = [];
+    const loadLeagueButton =
+        document.getElementById("loadLeagueButton");
 
-        // Draft pick value chart (approximate ADP values)
-        const pickValues = {
-            1: 1500, 2: 1480, 3: 1460, 4: 1440, 5: 1420,
-            6: 1400, 7: 1380, 8: 1360, 9: 1340, 10: 1320,
-            11: 1280, 12: 1240, 13: 1200, 14: 1160, 15: 1120,
-            16: 1100, 17: 1080, 18: 1060, 19: 1040, 20: 1020,
-            21: 1000, 22: 980, 23: 960, 24: 940, 25: 920,
-            26: 900, 27: 880, 28: 860, 29: 840, 30: 820,
-            31: 800, 32: 780
-        };
+    const leagueIdInput =
+        document.getElementById("leagueId");
 
-        function updateThemeButton() {
-            const darkModeEnabled =
-                document.body.classList.contains("dark");
+    const leagueStatus =
+        document.getElementById("leagueStatus");
 
-            themeButton.textContent = darkModeEnabled
-                ? "☀️ Light mode"
-                : "🌙 Dark mode";
+    const team1Select =
+        document.getElementById("team1Select");
+
+    const team2Select =
+        document.getElementById("team2Select");
+
+
+    /*
+     * Sleeper data stored after loading a league
+     */
+
+    let currentLeague = null;
+    let leagueUsers = [];
+    let leagueRosters = [];
+    let tradedDraftPicks = [];
+
+    let team1SelectedPicks = [];
+    let team2SelectedPicks = [];
+
+
+    /*
+     * Theme
+     */
+
+    function updateThemeButton() {
+        const darkModeEnabled =
+            document.body.classList.contains("dark");
+
+        themeButton.textContent = darkModeEnabled
+            ? "☀️ Light mode"
+            : "🌙 Dark mode";
+    }
+
+
+    function toggleTheme() {
+        document.body.classList.toggle("dark");
+
+        const selectedTheme =
+            document.body.classList.contains("dark")
+                ? "dark"
+                : "light";
+
+        localStorage.setItem(
+            "theme",
+            selectedTheme
+        );
+
+        updateThemeButton();
+    }
+
+
+    /*
+     * Load Sleeper league
+     */
+
+    async function prepareForLeagueLoad() {
+        const leagueId =
+            leagueIdInput.value.trim();
+
+        if (!leagueId) {
+            leagueStatus.textContent =
+                "Please enter a Sleeper League ID.";
+
+            leagueIdInput.focus();
+            return;
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle("dark");
+        try {
+            setLoadingState(true);
 
-            const selectedTheme =
-                document.body.classList.contains("dark")
-                    ? "dark"
-                    : "light";
+            leagueStatus.textContent =
+                "Loading league...";
 
-            localStorage.setItem("theme", selectedTheme);
-            updateThemeButton();
-        }
+            resetLeagueDisplay();
 
-        async function prepareForLeagueLoad() {
-            const leagueId = leagueIdInput.value.trim();
+            const leagueResponse = await fetch(
+                `https://api.sleeper.app/v1/league/${leagueId}`
+            );
 
-            if (!leagueId) {
-                leagueStatus.textContent =
-                    "Please enter a Sleeper League ID.";
-                return;
-            }
-
-            try {
-                leagueStatus.textContent =
-                    "Loading league...";
-
-                const response = await fetch(
-                    `https://api.sleeper.app/v1/league/${leagueId}`
+            if (!leagueResponse.ok) {
+                throw new Error(
+                    "League could not be found."
                 );
-
-                if (!response.ok) {
-                    throw new Error("League not found");
-                }
-
-                const league = await response.json();
-
-                leagueStatus.textContent =
-                    `✅ Loaded: ${league.name}`;
-
-                await loadLeagueData(leagueId);
             }
-            catch (error) {
-                leagueStatus.textContent =
-                    "❌ Unable to load league";
 
-                console.error(error);
-            }
-        }
+            currentLeague =
+                await leagueResponse.json();
 
-        async function loadLeagueData(leagueId) {
-            const usersResponse = await fetch(
-                `https://api.sleeper.app/v1/league/${leagueId}/users`
-            );
+            await loadLeagueData(leagueId);
 
-            const rostersResponse = await fetch(
-                `https://api.sleeper.app/v1/league/${leagueId}/rosters`
-            );
-
-            const picksResponse = await fetch(
-                `https://api.sleeper.app/v1/league/${leagueId}/traded_picks`
-            );
-
-            leagueUsers = await usersResponse.json();
-            leagueRosters = await rostersResponse.json();
-            allDraftPicks = await picksResponse.json();
+            leagueStatus.textContent =
+                `✅ Loaded: ${currentLeague.name}`;
 
             populateTeamDropdowns();
         }
+        catch (error) {
+            currentLeague = null;
 
-        function populateTeamDropdowns() {
-            const team1Select =
-                document.getElementById("team1Select");
+            leagueStatus.textContent =
+                `❌ ${error.message || "Unable to load league."}`;
 
-            const team2Select =
-                document.getElementById("team2Select");
+            console.error(
+                "League loading error:",
+                error
+            );
+        }
+        finally {
+            setLoadingState(false);
+        }
+    }
 
-            team1Select.innerHTML =
-                '<option value="">Select Team 1</option>';
 
-            team2Select.innerHTML =
-                '<option value="">Select Team 2</option>';
+    async function loadLeagueData(leagueId) {
+        const [
+            usersResponse,
+            rostersResponse,
+            tradedPicksResponse
+        ] = await Promise.all([
+            fetch(
+                `https://api.sleeper.app/v1/league/${leagueId}/users`
+            ),
+            fetch(
+                `https://api.sleeper.app/v1/league/${leagueId}/rosters`
+            ),
+            fetch(
+                `https://api.sleeper.app/v1/league/${leagueId}/traded_picks`
+            )
+        ]);
 
-            leagueUsers.forEach(user => {
-                const option1 =
-                    document.createElement("option");
-
-                option1.value = user.user_id;
-                option1.textContent =
-                    user.display_name;
-
-                team1Select.appendChild(option1);
-
-                const option2 =
-                    document.createElement("option");
-
-                option2.value = user.user_id;
-                option2.textContent =
-                    user.display_name;
-
-                team2Select.appendChild(option2);
-            });
-
-            team1Select.disabled = false;
-            team2Select.disabled = false;
+        if (
+            !usersResponse.ok ||
+            !rostersResponse.ok ||
+            !tradedPicksResponse.ok
+        ) {
+            throw new Error(
+                "The league was found, but its teams or picks could not be loaded."
+            );
         }
 
-        function displayTeamProfile(userId, teamNumber) {
-            const user = leagueUsers.find(u => u.user_id === userId);
-            const roster = leagueRosters.find(r => r.owner_id === userId);
+        leagueUsers =
+            await usersResponse.json();
 
-            if (!user || !roster) return;
+        leagueRosters =
+            await rostersResponse.json();
 
-            const nameEl = document.getElementById(`team${teamNumber}Name`);
-            const usernameEl = document.getElementById(`team${teamNumber}Username`);
-            const avatarEl = document.getElementById(`team${teamNumber}Avatar`);
+        tradedDraftPicks =
+            await tradedPicksResponse.json();
 
-            nameEl.textContent = user.display_name;
-            usernameEl.textContent = `@${user.username || 'unknown'}`;
-
-            if (user.avatar) {
-                avatarEl.innerHTML = `<img src="https://sleepercdn.com/avatars/thumbs/${user.avatar}" alt="${user.display_name}">`;
-            } else {
-                avatarEl.textContent = '🏈';
-            }
-
-            displayTeamPicks(userId, teamNumber);
-        }
-
-        function displayTeamPicks(userId, teamNumber) {
-            const roster = leagueRosters.find(r => r.owner_id === userId);
-            if (!roster) return;
-
-            const picksContainer = document.getElementById(`team${teamNumber}Picks`);
-            const userPicks = allDraftPicks.filter(pick => pick.owner_id === userId);
-
-            if (userPicks.length === 0) {
-                picksContainer.innerHTML = '<div class="picks-placeholder">No draft picks available</div>';
-                return;
-            }
-
-            picksContainer.innerHTML = '';
-            const pickList = document.createElement('div');
-            pickList.className = 'pick-list';
-
-            userPicks.forEach(pick => {
-                const pickNum = pick.season === 0 ? pick.round + 1 : pick.round + 1;
-                const button = document.createElement('button');
-                button.className = 'pick-button';
-                button.textContent = `R${pick.round + 1}`;
-                button.dataset.pickId = pick.pick_id;
-                button.dataset.teamNumber = teamNumber;
-                button.dataset.pickValue = pickValues[pickNum] || 100;
-
-                button.addEventListener('click', function () {
-                    this.classList.toggle('selected');
-                    updateTradeAnalysis();
-                });
-
-                pickList.appendChild(button);
-            });
-
-            picksContainer.appendChild(pickList);
-        }
-
-        function updateTradeAnalysis() {
-            const team1Picks = Array.from(document.querySelectorAll('#team1Picks .pick-button.selected'));
-            const team2Picks = Array.from(document.querySelectorAll('#team2Picks .pick-button.selected'));
-
-            team1SelectedPicks = team1Picks.map(btn => parseFloat(btn.dataset.pickValue));
-            team2SelectedPicks = team2Picks.map(btn => parseFloat(btn.dataset.pickValue));
-
-            const team1Total = team1SelectedPicks.reduce((sum, val) => sum + val, 0);
-            const team2Total = team2SelectedPicks.reduce((sum, val) => sum + val, 0);
-            const difference = Math.abs(team1Total - team2Total);
-
-            const tradeScoreEl = document.getElementById('tradeScore');
-            const team1ValueEl = document.getElementById('team1Value');
-            const team2ValueEl = document.getElementById('team2Value');
-            const tradeDifferenceEl = document.getElementById('tradeDifference');
-
-            team1ValueEl.textContent = team1Total.toFixed(2);
-            team2ValueEl.textContent = team2Total.toFixed(2);
-            tradeDifferenceEl.textContent = difference.toFixed(2);
-
-            if (team1Total === 0 && team2Total === 0) {
-                tradeScoreEl.textContent = 'Select picks to analyse a trade';
-            } else if (team1Total > team2Total) {
-                tradeScoreEl.textContent = `Team 1 +${difference.toFixed(0)} value`;
-            } else if (team2Total > team1Total) {
-                tradeScoreEl.textContent = `Team 2 +${difference.toFixed(0)} value`;
-            } else {
-                tradeScoreEl.textContent = 'Even trade ✓';
-            }
-        }
-
-        const team1Select = document.getElementById("team1Select");
-        const team2Select = document.getElementById("team2Select");
-
-        team1Select.addEventListener("change", function () {
-            if (this.value) {
-                displayTeamProfile(this.value, 1);
-            }
-        });
-
-        team2Select.addEventListener("change", function () {
-            if (this.value) {
-                displayTeamProfile(this.value, 2);
-            }
-        });
-
-        themeButton.addEventListener("click", toggleTheme);
-
-        loadLeagueButton.addEventListener(
-            "click",
-            prepareForLeagueLoad
+        console.log(
+            "League:",
+            currentLeague
         );
 
-        leagueIdInput.addEventListener("keydown", function (event) {
+        console.log(
+            "Users:",
+            leagueUsers
+        );
+
+        console.log(
+            "Rosters:",
+            leagueRosters
+        );
+
+        console.log(
+            "Traded picks:",
+            tradedDraftPicks
+        );
+    }
+
+
+    function setLoadingState(isLoading) {
+        loadLeagueButton.disabled =
+            isLoading;
+
+        leagueIdInput.disabled =
+            isLoading;
+
+        loadLeagueButton.textContent =
+            isLoading
+                ? "Loading..."
+                : "Load League";
+    }
+
+
+    /*
+     * Populate team dropdowns
+     */
+
+    function populateTeamDropdowns() {
+        team1Select.innerHTML =
+            '<option value="">Select Team 1</option>';
+
+        team2Select.innerHTML =
+            '<option value="">Select Team 2</option>';
+
+        const usersWithRosters =
+            leagueUsers
+                .filter(user =>
+                    leagueRosters.some(
+                        roster =>
+                            String(roster.owner_id) ===
+                            String(user.user_id)
+                    )
+                )
+                .sort((userA, userB) =>
+                    getTeamName(userA).localeCompare(
+                        getTeamName(userB)
+                    )
+                );
+
+        usersWithRosters.forEach(user => {
+            const teamName =
+                getTeamName(user);
+
+            const optionText =
+                teamName === user.display_name
+                    ? user.display_name
+                    : `${teamName} (${user.display_name})`;
+
+            const team1Option =
+                document.createElement("option");
+
+            team1Option.value =
+                user.user_id;
+
+            team1Option.textContent =
+                optionText;
+
+            team1Select.appendChild(
+                team1Option
+            );
+
+            const team2Option =
+                document.createElement("option");
+
+            team2Option.value =
+                user.user_id;
+
+            team2Option.textContent =
+                optionText;
+
+            team2Select.appendChild(
+                team2Option
+            );
+        });
+
+        team1Select.disabled = false;
+        team2Select.disabled = false;
+    }
+
+
+    /*
+     * Team profiles
+     */
+
+    function getTeamName(user) {
+        return (
+            user.metadata?.team_name ||
+            user.display_name ||
+            "Unnamed Team"
+        );
+    }
+
+
+    function displayTeamProfile(
+        userId,
+        teamNumber
+    ) {
+        const user =
+            leagueUsers.find(
+                leagueUser =>
+                    String(leagueUser.user_id) ===
+                    String(userId)
+            );
+
+        const roster =
+            leagueRosters.find(
+                leagueRoster =>
+                    String(leagueRoster.owner_id) ===
+                    String(userId)
+            );
+
+        if (!user || !roster) {
+            resetTeamCard(teamNumber);
+            return;
+        }
+
+        const nameElement =
+            document.getElementById(
+                `team${teamNumber}Name`
+            );
+
+        const usernameElement =
+            document.getElementById(
+                `team${teamNumber}Username`
+            );
+
+        const avatarElement =
+            document.getElementById(
+                `team${teamNumber}Avatar`
+            );
+
+        nameElement.textContent =
+            getTeamName(user);
+
+        usernameElement.textContent =
+            `@${user.display_name}`;
+
+        if (user.avatar) {
+            const avatarImage =
+                document.createElement("img");
+
+            avatarImage.src =
+                `https://sleepercdn.com/avatars/thumbs/${user.avatar}`;
+
+            avatarImage.alt =
+                `${user.display_name} avatar`;
+
+            avatarElement.replaceChildren(
+                avatarImage
+            );
+        }
+        else {
+            avatarElement.textContent =
+                "🏈";
+        }
+
+        displayTeamPicks(
+            roster.roster_id,
+            teamNumber
+        );
+    }
+
+
+    /*
+     * Draft-pick ownership
+     */
+
+    function getFutureSeasons() {
+        const leagueSeason =
+            Number(currentLeague?.season);
+
+        const tradedSeasons =
+            tradedDraftPicks
+                .map(pick =>
+                    Number(pick.season)
+                )
+                .filter(season =>
+                    Number.isInteger(season)
+                );
+
+        if (!Number.isInteger(leagueSeason)) {
+            return [
+                ...new Set(tradedSeasons)
+            ].sort();
+        }
+
+        /*
+         * Start with the league season and the
+         * following two seasons.
+         */
+
+        const defaultSeasons = [
+            leagueSeason,
+            leagueSeason + 1,
+            leagueSeason + 2
+        ];
+
+        return [
+            ...new Set([
+                ...defaultSeasons,
+                ...tradedSeasons
+            ])
+        ].sort();
+    }
+
+
+    function getNumberOfDraftRounds() {
+        const configuredRounds =
+            Number(
+                currentLeague?.settings?.draft_rounds
+            );
+
+        if (
+            Number.isInteger(configuredRounds) &&
+            configuredRounds > 0
+        ) {
+            return configuredRounds;
+        }
+
+        const highestTradedRound =
+            Math.max(
+                0,
+                ...tradedDraftPicks.map(
+                    pick =>
+                        Number(pick.round) || 0
+                )
+            );
+
+        return highestTradedRound || 4;
+    }
+
+
+    function buildAllOwnedPicks() {
+        const seasons =
+            getFutureSeasons();
+
+        const numberOfRounds =
+            getNumberOfDraftRounds();
+
+        const picks = [];
+
+        /*
+         * Every roster originally owns one pick
+         * in each round for each season.
+         */
+
+        seasons.forEach(season => {
+            leagueRosters.forEach(
+                originalRoster => {
+                    for (
+                        let round = 1;
+                        round <= numberOfRounds;
+                        round++
+                    ) {
+                        picks.push({
+                            season: season,
+                            round: round,
+
+                            originalRosterId:
+                                Number(
+                                    originalRoster.roster_id
+                                ),
+
+                            currentOwnerRosterId:
+                                Number(
+                                    originalRoster.roster_id
+                                )
+                        });
+                    }
+                }
+            );
+        });
+
+        /*
+         * Apply ownership changes returned by
+         * Sleeper's traded_picks endpoint.
+         */
+
+        tradedDraftPicks.forEach(
+            tradedPick => {
+                const matchingPick =
+                    picks.find(pick =>
+                        Number(pick.season) ===
+                            Number(tradedPick.season) &&
+
+                        Number(pick.round) ===
+                            Number(tradedPick.round) &&
+
+                        Number(
+                            pick.originalRosterId
+                        ) ===
+                            Number(
+                                tradedPick.roster_id
+                            )
+                    );
+
+                if (matchingPick) {
+                    matchingPick.currentOwnerRosterId =
+                        Number(
+                            tradedPick.owner_id
+                        );
+                }
+            }
+        );
+
+        return picks;
+    }
+
+
+    function displayTeamPicks(
+        rosterId,
+        teamNumber
+    ) {
+        const picksContainer =
+            document.getElementById(
+                `team${teamNumber}Picks`
+            );
+
+        const ownedPicks =
+            buildAllOwnedPicks()
+                .filter(pick =>
+                    Number(
+                        pick.currentOwnerRosterId
+                    ) === Number(rosterId)
+                )
+                .sort((pickA, pickB) =>
+                    pickA.season - pickB.season ||
+                    pickA.round - pickB.round ||
+                    pickA.originalRosterId -
+                        pickB.originalRosterId
+                );
+
+        picksContainer.className =
+            "pick-list";
+
+        picksContainer.innerHTML = "";
+
+        if (ownedPicks.length === 0) {
+            picksContainer.className =
+                "picks-placeholder";
+
+            picksContainer.textContent =
+                "No available draft picks were found.";
+
+            updateTradeAnalysis();
+            return;
+        }
+
+        ownedPicks.forEach(pick => {
+            const button =
+                document.createElement("button");
+
+            button.type =
+                "button";
+
+            button.className =
+                "pick-button";
+
+            button.dataset.season =
+                pick.season;
+
+            button.dataset.round =
+                pick.round;
+
+            button.dataset.originalRosterId =
+                pick.originalRosterId;
+
+            button.dataset.currentOwnerRosterId =
+                pick.currentOwnerRosterId;
+
+            const originalOwner =
+                getRosterDisplayName(
+                    pick.originalRosterId
+                );
+
+            const isOriginalPick =
+                Number(
+                    pick.originalRosterId
+                ) === Number(rosterId);
+
+            button.textContent =
+                isOriginalPick
+                    ? `${pick.season} Round ${pick.round}`
+                    : `${pick.season} Round ${pick.round} via ${originalOwner}`;
+
+            button.addEventListener(
+                "click",
+                function () {
+                    button.classList.toggle(
+                        "selected"
+                    );
+
+                    updateTradeAnalysis();
+                }
+            );
+
+            picksContainer.appendChild(
+                button
+            );
+        });
+
+        updateTradeAnalysis();
+    }
+
+
+    function getRosterDisplayName(rosterId) {
+        const roster =
+            leagueRosters.find(
+                leagueRoster =>
+                    Number(
+                        leagueRoster.roster_id
+                    ) === Number(rosterId)
+            );
+
+        if (!roster) {
+            return `Roster ${rosterId}`;
+        }
+
+        const user =
+            leagueUsers.find(
+                leagueUser =>
+                    String(
+                        leagueUser.user_id
+                    ) ===
+                    String(roster.owner_id)
+            );
+
+        return user
+            ? getTeamName(user)
+            : `Roster ${rosterId}`;
+    }
+
+
+    /*
+     * Trade selection summary
+     *
+     * Pick values are deliberately not calculated
+     * in this step. Future picks only have a season,
+     * round and original roster. Their exact 1.01,
+     * 1.02, 2.01 position may not yet be known.
+     */
+
+    function updateTradeAnalysis() {
+        const selectedTeam1Buttons =
+            Array.from(
+                document.querySelectorAll(
+                    "#team1Picks .pick-button.selected"
+                )
+            );
+
+        const selectedTeam2Buttons =
+            Array.from(
+                document.querySelectorAll(
+                    "#team2Picks .pick-button.selected"
+                )
+            );
+
+        team1SelectedPicks =
+            selectedTeam1Buttons.map(
+                button => ({
+                    season:
+                        Number(
+                            button.dataset.season
+                        ),
+
+                    round:
+                        Number(
+                            button.dataset.round
+                        ),
+
+                    originalRosterId:
+                        Number(
+                            button.dataset.originalRosterId
+                        )
+                })
+            );
+
+        team2SelectedPicks =
+            selectedTeam2Buttons.map(
+                button => ({
+                    season:
+                        Number(
+                            button.dataset.season
+                        ),
+
+                    round:
+                        Number(
+                            button.dataset.round
+                        ),
+
+                    originalRosterId:
+                        Number(
+                            button.dataset.originalRosterId
+                        )
+                })
+            );
+
+        const team1ValueElement =
+            document.getElementById(
+                "team1Value"
+            );
+
+        const team2ValueElement =
+            document.getElementById(
+                "team2Value"
+            );
+
+        const differenceElement =
+            document.getElementById(
+                "tradeDifference"
+            );
+
+        const tradeScoreElement =
+            document.getElementById(
+                "tradeScore"
+            );
+
+        team1ValueElement.textContent =
+            `${team1SelectedPicks.length} selected`;
+
+        team2ValueElement.textContent =
+            `${team2SelectedPicks.length} selected`;
+
+        differenceElement.textContent =
+            "Values not added yet";
+
+        if (
+            team1SelectedPicks.length === 0 &&
+            team2SelectedPicks.length === 0
+        ) {
+            tradeScoreElement.textContent =
+                "Select picks to analyse a trade";
+        }
+        else {
+            tradeScoreElement.textContent =
+                "Picks selected";
+        }
+    }
+
+
+    /*
+     * Reset functions
+     */
+
+    function resetLeagueDisplay() {
+        leagueUsers = [];
+        leagueRosters = [];
+        tradedDraftPicks = [];
+
+        team1SelectedPicks = [];
+        team2SelectedPicks = [];
+
+        team1Select.disabled = true;
+        team2Select.disabled = true;
+
+        team1Select.innerHTML =
+            '<option value="">Loading teams...</option>';
+
+        team2Select.innerHTML =
+            '<option value="">Loading teams...</option>';
+
+        resetTeamCard(1);
+        resetTeamCard(2);
+
+        updateTradeAnalysis();
+    }
+
+
+    function resetTeamCard(teamNumber) {
+        const nameElement =
+            document.getElementById(
+                `team${teamNumber}Name`
+            );
+
+        const usernameElement =
+            document.getElementById(
+                `team${teamNumber}Username`
+            );
+
+        const avatarElement =
+            document.getElementById(
+                `team${teamNumber}Avatar`
+            );
+
+        const picksContainer =
+            document.getElementById(
+                `team${teamNumber}Picks`
+            );
+
+        nameElement.textContent =
+            `Team ${teamNumber} Name`;
+
+        usernameElement.textContent =
+            "@username";
+
+        avatarElement.textContent =
+            "🏈";
+
+        picksContainer.className =
+            "picks-placeholder";
+
+        picksContainer.textContent =
+            "Select a team to display the draft picks owned by that team.";
+    }
+
+
+    /*
+     * Events
+     */
+
+    team1Select.addEventListener(
+        "change",
+        function () {
+            if (this.value) {
+                displayTeamProfile(
+                    this.value,
+                    1
+                );
+            }
+            else {
+                resetTeamCard(1);
+                updateTradeAnalysis();
+            }
+        }
+    );
+
+
+    team2Select.addEventListener(
+        "change",
+        function () {
+            if (this.value) {
+                displayTeamProfile(
+                    this.value,
+                    2
+                );
+            }
+            else {
+                resetTeamCard(2);
+                updateTradeAnalysis();
+            }
+        }
+    );
+
+
+    themeButton.addEventListener(
+        "click",
+        toggleTheme
+    );
+
+
+    loadLeagueButton.addEventListener(
+        "click",
+        prepareForLeagueLoad
+    );
+
+
+    leagueIdInput.addEventListener(
+        "keydown",
+        function (event) {
             if (event.key === "Enter") {
                 prepareForLeagueLoad();
             }
-        });
-
-        if (localStorage.getItem("theme") === "dark") {
-            document.body.classList.add("dark");
         }
+    );
 
-        updateThemeButton();
-    </script>
+
+    /*
+     * Initial page setup
+     */
+
+    if (
+        localStorage.getItem("theme") ===
+        "dark"
+    ) {
+        document.body.classList.add(
+            "dark"
+        );
+    }
+
+    updateThemeButton();
+</script>
 </body>
 
 </html>
